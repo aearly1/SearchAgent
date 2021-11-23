@@ -40,7 +40,7 @@ public class Helpers {
         //maximum capacity
         int c = Integer.parseInt(segments[1]);
 
-        //telephone booth location
+        //neo location
         String[] neolocStr = segments[2].split(",");
         Location neoLoc = new Location(Integer.parseInt(neolocStr[0]), Integer.parseInt(neolocStr[1]));
 
