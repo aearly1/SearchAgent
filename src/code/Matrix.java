@@ -87,11 +87,24 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
     @Override
     public boolean isGoal(MatrixState s) {
-        boolean goal = false;
-
         //TODO: Ali
-
-        return goal;
+        int neoDamage = s.getNeo().getDamage(); //get neo damage
+        boolean damageLess = neoDamage<100; // check damage is less than 100
+        Location neoLoc = s.getNeo().getLocation(); // get neo location
+        Location telephoneBooth = s.getTeleBoothLoc(); //get booth location
+        boolean nAtBooth = neoLoc.equals(telephoneBooth); // check if neo is at booth
+        boolean hostagesAtBooth= true; 
+        
+        for(Hostage hostage: s.getHostages())
+        {
+        	Location hostageLoc = hostage.getLocation(); //get location of hostage
+        	if(!hostageLoc.equals(telephoneBooth))//check is a hostage is at the booth 
+        	{
+        		hostagesAtBooth= false; break; //there exists a hostage that hasn't been saved
+        	}
+        }
+        
+        return damageLess && nAtBooth && hostagesAtBooth;
     }
 
     @Override
