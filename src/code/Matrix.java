@@ -110,8 +110,20 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     @Override
     public int[] stepCost(MatrixState s1, MatrixOperator a, MatrixState s2) {
         int[] cost = new int[]{0, 0};
-
         //TODO: Ali
+        if(a!=(MatrixOperator.TAKE_PILL))//check if the agent didn't take pill (if he did no hostage will die)
+        {
+        	for(Hostage h: s1.getHostages())
+        	{
+        		if(h.getDamage()==1 || h.getDamage()==2)// check if the damage will become 0 in the new state
+        		{
+        			cost[0]++; // increment the number of killed hostages
+        		}
+        	}
+        }
+        int s1AgentsCount=s1.getAgentLocs().size(); //get number of ALIVE agents in old state(s1)
+        int s2AgentsCount=s2.getAgentLocs().size(); //get number of ALIVE agents in new state(s2)
+        cost[1] = s1AgentsCount-s2AgentsCount; // number of agents killed as result of doing action a
 
         return cost;
     }
