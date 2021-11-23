@@ -1,6 +1,7 @@
 package code;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Helpers {
 
@@ -54,7 +55,12 @@ public class Helpers {
         ArrayList<Location> pills = stringToLocArray(segments[5]);
 
         //pad locations
-        ArrayList<Location> pads = stringToLocArray(segments[6]);
+        ArrayList<Location> padArr = stringToLocArray(segments[6]);
+        HashMap<Location, Location> pads = new HashMap<>();
+
+        for (int i = 0; i < padArr.size() - 1; i += 2) {
+            pads.put(padArr.get(i), padArr.get(i + 1));
+        }
 
         //hostages
         String[] hostageStr = segments[7].split(",");

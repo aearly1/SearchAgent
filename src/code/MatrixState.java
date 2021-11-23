@@ -3,6 +3,7 @@ package code;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -38,7 +39,7 @@ public class MatrixState implements Serializable {
     private Neo _neo;
     private ArrayList<Hostage> _hostages;
     private ArrayList<Location> _agentLocs;
-    private ArrayList<Location> _padLocs;
+    private HashMap<Location, Location> _padLocs;
     private ArrayList<Location> _pillLocs;
     private Location _teleBoothLoc;
 
@@ -48,7 +49,7 @@ public class MatrixState implements Serializable {
      */
 
     public MatrixState(Location gridDims, Neo neo, ArrayList<Hostage> hostages, ArrayList<Location> agentLocs,
-                       ArrayList<Location> padLocs, ArrayList<Location> pillLocs, Location teleBoothLoc) {
+                       HashMap<Location, Location> padLocs, ArrayList<Location> pillLocs, Location teleBoothLoc) {
         _gridDims = gridDims;
         _neo = neo;
         _hostages = hostages;
@@ -65,10 +66,10 @@ public class MatrixState implements Serializable {
     public MatrixState() {
         _gridDims = new Location(0, 0);
         _neo = new Neo(new Location(0, 0), 0, 0);
-        _hostages = new ArrayList<Hostage>();
-        _agentLocs = new ArrayList<Location>();
-        _padLocs = new ArrayList<Location>();
-        _pillLocs = new ArrayList<Location>();
+        _hostages = new ArrayList<>();
+        _agentLocs = new ArrayList<>();
+        _padLocs = new HashMap<>();
+        _pillLocs = new ArrayList<>();
         _teleBoothLoc = new Location(0, 0);
     }
 
@@ -106,11 +107,11 @@ public class MatrixState implements Serializable {
         _agentLocs = agentLocs;
     }
 
-    public ArrayList<Location> getPadLocs() {
+    public HashMap<Location, Location> getPadLocs() {
         return _padLocs;
     }
 
-    public void setPadLocs(ArrayList<Location> padLocs) {
+    public void setPadLocs(HashMap<Location, Location> padLocs) {
         _padLocs = padLocs;
     }
 
@@ -200,15 +201,11 @@ public class MatrixState implements Serializable {
     //====================
 
     public void removePad(Location p) {
-        _padLocs.remove(p); // removes by reference
+        _padLocs.remove(p); // removes by hash
     }
 
-    public void removePad(int indx) {
-        _padLocs.remove(indx);
-    }
-
-    public void addPad(Location p) {
-        _padLocs.add(p);
+    public void addPad(Location src, Location dest) {
+        _padLocs.put(src, dest);
     }
 
     // ================================Hashing=================================
