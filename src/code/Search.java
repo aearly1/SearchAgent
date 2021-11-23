@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
@@ -50,14 +51,30 @@ public class Search {
     }
 
     public static Node<MatrixState, MatrixOperator>
-    BFS(Matrix problem, Node<MatrixState, MatrixOperator> root) {
+    BFS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException{
+    	HashSet<Node<MatrixState, MatrixOperator>> expandedNodes = new HashSet<Node<MatrixState,MatrixOperator>>();
         Queue<Node<MatrixState, MatrixOperator>> Q = new LinkedList<>();
         Q.add(root);
+        expandedNodes.add(root);
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
             if (problem.isGoal(head.getState())) return head;
 
             // TODO: Basant | Enqueue nodes
+            ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
+            for(MatrixOperator a: possibleActions)
+            {
+            	MatrixState possibleState = problem.result(head.getState(), a);
+            	if(!expandedNodes.contains(possibleState))
+            	{
+            		int[] cost= new int[2];
+            		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
+            		cost[1]=head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+            		Node newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth()+1);
+            		Q.add(newNode);
+            		expandedNodes.add(newNode);
+            	}
+            }
         }
 
         // null == failure
@@ -65,14 +82,30 @@ public class Search {
     }
 
     public static Node<MatrixState, MatrixOperator>
-    DFS(Matrix problem, Node<MatrixState, MatrixOperator> root) {
-        Queue<Node<MatrixState, MatrixOperator>> Q = new LinkedList<>();
-        Q.add(root);
-        while (!Q.isEmpty()) {
-            Node<MatrixState, MatrixOperator> head = Q.poll();
+    DFS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
+    	HashSet<Node<MatrixState, MatrixOperator>> expandedNodes = new HashSet<Node<MatrixState,MatrixOperator>>();
+        Stack<Node<MatrixState, MatrixOperator>> S = new Stack<>();
+        S.add(root);
+        expandedNodes.add(root);
+        while (!S.isEmpty()) {
+            Node<MatrixState, MatrixOperator> head = S.pop();
             if (problem.isGoal(head.getState())) return head;
 
             // TODO: Basant | Enqueue nodes
+            ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
+            for(MatrixOperator a: possibleActions)
+            {
+            	MatrixState possibleState = problem.result(head.getState(), a);
+            	if(!expandedNodes.contains(possibleState))
+            	{
+            		int[] cost= new int[2];
+            		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
+            		cost[1]=head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+            		Node newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth()+1);
+            		S.push(newNode);
+            		expandedNodes.add(newNode);
+            	}
+            }
         }
 
         // null == failure
@@ -121,10 +154,10 @@ public class Search {
 
     public static Node<MatrixState, MatrixOperator>
     AS(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws IOException, ClassNotFoundException {
-    	HashSet<Node<MatrixState, MatrixOperator>> inQ = new HashSet<Node<MatrixState,MatrixOperator>>();
+    	HashSet<Node<MatrixState, MatrixOperator>> expandedNodes = new HashSet<Node<MatrixState,MatrixOperator>>();
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
         Q.add(root);
-        inQ.add(root);
+        expandedNodes.add(root);
 
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
@@ -135,7 +168,7 @@ public class Search {
             for(MatrixOperator a: possibleActions)
             {
             	MatrixState possibleState = problem.result(head.getState(), a);
-            	if(!inQ.contains(possibleState))
+            	if(!expandedNodes.contains(possibleState))
             	{
             		int[] cost= new int[2];
             		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
@@ -151,7 +184,7 @@ public class Search {
             		}
             		Node newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, heuristic, head.getDepth()+1);
             		Q.add(newNode);
-            		inQ.add(newNode);
+            		expandedNodes.add(newNode);
             	}
             }
         }
