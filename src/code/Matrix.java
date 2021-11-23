@@ -173,6 +173,22 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     	}
     	return cost;
     }
+    
+    public int GreedyHeuristic1(Node n)
+    {
+    	int cost = 0;
+    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	
+    	for(Hostage h: hostages)
+    	{
+    		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
+    		{
+    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    		}
+    	}
+    	return cost;
+    }
 
     // ==========================Getters-and-Setters==========================
 
