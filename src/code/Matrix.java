@@ -87,20 +87,107 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
     @Override
     public boolean isGoal(MatrixState s) {
-        boolean goal = false;
-
         //TODO: Ali
-
-        return goal;
+        int neoDamage = s.getNeo().getDamage(); //get neo damage
+        boolean damageLess = neoDamage<100; // check damage is less than 100
+        Location neoLoc = s.getNeo().getLocation(); // get neo location
+        Location telephoneBooth = s.getTeleBoothLoc(); //get booth location
+        boolean nAtBooth = neoLoc.equals(telephoneBooth); // check if neo is at booth
+        boolean hostagesAtBooth= true; 
+        
+        for(Hostage hostage: s.getHostages())
+        {
+        	Location hostageLoc = hostage.getLocation(); //get location of hostage
+        	if(!hostageLoc.equals(telephoneBooth))//check is a hostage is at the booth 
+        	{
+        		hostagesAtBooth= false; break; //there exists a hostage that hasn't been saved
+        	}
+        }
+        
+        return damageLess && nAtBooth && hostagesAtBooth;
     }
 
     @Override
     public int[] stepCost(MatrixState s1, MatrixOperator a, MatrixState s2) {
         int[] cost = new int[]{0, 0};
-
         //TODO: Ali
+        if(a!=(MatrixOperator.TAKE_PILL))//check if the agent didn't take pill (if he did no hostage will die)
+        {
+        	for(Hostage h: s1.getHostages())
+        	{
+        		if(h.getDamage()==1 || h.getDamage()==2)// check if the damage will become 0 in the new state
+        		{
+        			cost[0]++; // increment the number of killed hostages
+        		}
+        	}
+        }
+        int s1AgentsCount=s1.getAgentLocs().size(); //get number of ALIVE agents in old state(s1)
+        int s2AgentsCount=s2.getAgentLocs().size(); //get number of ALIVE agents in new state(s2)
+        cost[1] = s1AgentsCount-s2AgentsCount; // number of agents killed as result of doing action a
 
         return cost;
+    }
+    
+    /**
+     * The first A* heuristic assigns a cost value that corresponds
+     * to the total number of unsaved (and ALIVE) hostages since
+     * you will need at least one action to save each hostage.
+     * Thus, this is guaranteed to be admissable.
+     */
+    public int ASHeuristic1(Node n)
+    {
+    	int cost = 0;
+    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	
+    	for(Hostage h: hostages)
+    	{
+    		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
+    		{
+    			cost++; //increment cost since this is an unsaved hostage
+    		}
+    	}
+    	return cost;
+    }
+    
+    /**
+     * The second A* heuristic assigns a cost value that corresponds
+     * to the sum of the Manhattan distance between unsaved (and ALIVE) hostages 
+     * and the telephone booth since you will need at least this number of moves
+     * to carry hostage from initial location to booth. You cannot carry them in
+     * less moves. The cost may be more than that if the agents does other moves
+     * such as kill or take pill to save. Thus, this is guaranteed to be admissable.
+     */
+    public int ASHeuristic2(Node n)
+    {
+    	int cost = 0;
+    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	
+    	for(Hostage h: hostages)
+    	{
+    		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
+    		{
+    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    		}
+    	}
+    	return cost;
+    }
+    
+    public int GreedyHeuristic1(Node n)
+    {
+    	int cost = 0;
+    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	
+    	for(Hostage h: hostages)
+    	{
+    		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
+    		{
+    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    		}
+    	}
+    	return cost;
     }
 
     // ==========================Getters-and-Setters==========================

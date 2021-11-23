@@ -108,8 +108,8 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
         if (myTotal > otherTotal) {
             // if current object is greater,then return 1
             return 1;
-        } else if (myTotal > otherTotal) {
-            // if current object is greater,then return -1
+        } else if (myTotal < otherTotal) {
+            // if current object is less,then return -1
             return -1;
         } else {
             myTotal += this.getPathCost()[1];
@@ -117,8 +117,8 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
 
             if (myTotal > otherTotal) {
                 return 1;
-            } else if (myTotal > otherTotal) {
-                // if current object is greater,then return -1
+            } else if (myTotal < otherTotal) {
+                // if current object is less,then return -1
                 return -1;
             }
             return 0;
