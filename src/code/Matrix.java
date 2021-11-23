@@ -2,6 +2,7 @@ package code;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * class representing the matrix problem.
@@ -152,29 +153,51 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     
     /**
      * The second A* heuristic assigns a cost value that corresponds
-     * to the sum of the Manhattan distance between unsaved (and ALIVE) hostages 
-     * and the telephone booth since you will need at least this number of moves
-     * to carry hostage from initial location to booth. You cannot carry them in
-     * less moves. The cost may be more than that if the agents does other moves
-     * such as kill or take pill to save. Thus, this is guaranteed to be admissable.
+     * to the sum of the MINIMUM required steps to carry EACH unsaved 
+     * and alive hostage from hostage location to telephone booth. The
+     * minimum number of steps to carry a certain hostage will either
+     * be 1) the Manhattan distance from the hostage location to telephone
+     * booth OR 2) the Manhattan distance from the closest pad to the booth
+     * to the actual booth. We will take the minimum of the two values. If 
+     * the former value is the minimum this would suggest that carrying the 
+     * hostage without using any pad is cheaper. The latter would suggest 
+     * that IF WE CAN FIND A CHEAP SEQUENCE OF STEPS TO TAKE US TO THE CLOSEST
+     * PAD TO BOOTH, then it would be cheaper to find a way to the pad and then
+     * move from the pad to the telephone booth. This heuristic is admissable
+     * for 2 reasons: 1) we only consider movement actions ignoring all others
+     * and thus the cost of actions could be greater than the calculated cost
+     * 2) We only calculate the distance from the closest pad to the booth.
+     * We do not consider the cost of going from hostage location, (possibly)
+     * teleporting a number of times and reaching the pad. This cost could be 
+     * tremendous making the actual cost cheaper.  
      */
     public int ASHeuristic2(Node n)
     {
     	int cost = 0;
     	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
     	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+        HashMap<Location, Location> padLocations = ((MatrixState) n.getState()).getPadLocs();
+    	int closestPadDist=Integer.MAX_VALUE; //the Manhattan distance between closest pad and telephone booth
+    	
+    	//calculate the Manhattan distance between closest pad and telephone booth
+    	for(Location pad: padLocations.keySet())
+    	{
+    		int manhDist = (pad.getX()-tBooth.getX())^2 + (pad.getY()-tBooth.getY())^2; // calculate Manhattan distance between pad and booth 
+    		closestPadDist = Math.min(closestPadDist, manhDist); 
+    	}
     	
     	for(Hostage h: hostages)
     	{
     		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
     		{
-    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    			int manhDist=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //calculate Manhattan distance to between hostage and telephone booth
+    			cost+= Math.min(manhDist,closestPadDist); 
     		}
     	}
     	return cost;
     }
     
-    public int GreedyHeuristic1(Node n)
+    public int GreedHeuristic1(Node n)
     {
     	int cost = 0;
     	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
