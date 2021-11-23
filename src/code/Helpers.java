@@ -90,7 +90,7 @@ public class Helpers {
     		  temp = new Location(neo.getX()-1,neo.getY());
       	    break;
     	  case RIGHT:
-    		  temp = new Location(neo.getX()-1,neo.getY());
+    		  temp = new Location(neo.getX()+1,neo.getY());
       	    break;
     	  default:
     		  temp=null;

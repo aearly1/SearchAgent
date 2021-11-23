@@ -48,8 +48,10 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * @param visualize if true prints a visual presentation of the grid as it
      *                  undergoes the different steps of the discovered solution
      * @return a String of the following format: plan;deaths;kills;nodes where
+     * @throws IOException 
+     * @throws ClassNotFoundException 
      */
-    public static String solve(String grid, String strategy, boolean visualize) {
+    public static String solve(String grid, String strategy, boolean visualize) throws ClassNotFoundException, IOException {
         MatrixState currentState = Helpers.parseGrid(grid); //initial state
         Matrix problem = new Matrix(currentState); //initialize problem
 
@@ -101,7 +103,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         //================== hostage==============
         for (Hostage h : hostages)
         {
-        	if(h.getLocation().equals(neo_loc) && h.getDamage()<100 && !h.isCarried() && s.getNeo().getCurrentCapacity()>0 && neo_loc.equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.CARRY))
+        	if(h.getLocation().equals(neo_loc) && h.getDamage()<100 && !h.isCarried() && s.getNeo().getCurrentCapacity()>0 && !neo_loc.equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.CARRY))
         	{
         		operators.add(MatrixOperator.CARRY);
         		
@@ -113,7 +115,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         		
         	}
         	
-        	if(h.getDamage()>=100 && !h.isCarried() && h.getLocation().adjacent(neo_loc) && h.getLocation().equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.KILL))
+        	if(h.getDamage()>=100 && !h.isCarried() && h.getLocation().adjacent(neo_loc) && !h.getLocation().equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.KILL))
         	{
         		operators.add(MatrixOperator.KILL);
         		
@@ -145,14 +147,6 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         {
         	operators.add(MatrixOperator.FLY);
         }
-//        for(Location l : fly_loc.)
-//        {
-//        	if (neo_loc.equals(l))
-//        	{
-//        		operators.add(MatrixOperator.FLY);
-//        		break;
-//        	}
-//        }
         return operators;
     }
 
@@ -167,11 +161,12 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         //fly to know which pad and update neo location with all the carried hostages
     	MatrixState res = s.copy();
 		Location new_loc;
+		ArrayList<Hostage> host_loc=res.getHostages();
 		switch(a) {
 		  case UP:
 			new_loc=new Location(res.getNeo().getLocation().getX(),res.getNeo().getLocation().getY()+1);
 		    res.getNeo().setLocation(new_loc);
-		    for(Hostage h : res.getHostages())
+		    for(Hostage h : host_loc)
 			{
 		    	if(h.isCarried())
 		    	{
@@ -183,7 +178,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 		  case DOWN:
 			  new_loc=new Location(res.getNeo().getLocation().getX(),res.getNeo().getLocation().getY()-1);
 			  res.getNeo().setLocation(new_loc);
-		      for(Hostage h : res.getHostages())
+		      for(Hostage h : host_loc)
 			  {
 		    	  if(h.isCarried())
 			    	{
@@ -194,7 +189,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 		  case LEFT:
 			  new_loc=new Location(res.getNeo().getLocation().getX()-1,res.getNeo().getLocation().getY());
 			  res.getNeo().setLocation(new_loc);
-		      for(Hostage h : res.getHostages())
+		      for(Hostage h : host_loc)
 			  {
 		    	  if(h.isCarried())
 			    	{
@@ -205,7 +200,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 		  case RIGHT:
 			  new_loc=new Location(res.getNeo().getLocation().getX()+1,res.getNeo().getLocation().getY());
 			  res.getNeo().setLocation(new_loc);
-		      for(Hostage h : res.getHostages())
+		      for(Hostage h : host_loc)
 			  {
 		    	  if(h.isCarried())
 			    	{
@@ -220,7 +215,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 			  		// he is not at the TB *
 			  		// neo can carry -> in actions
 			  		// is not carried *
-		      for(Hostage h : res.getHostages())
+		      for(Hostage h : host_loc)
 			  {
 				  if(h.getLocation().equals(res.getNeo().getLocation()) && !h.getLocation().equals(res.getTeleBoothLoc()) && !h.isCarried() && h.getDamage()<100)
 				  {
@@ -238,7 +233,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 			  		// all carried hostages will be dropped AND neo c will increment
 			  if(res.getNeo().getLocation().equals(res.getTeleBoothLoc()))
 			  {
-				  for(Hostage h : res.getHostages())
+				  for(Hostage h : host_loc)
 				  {
 					  if(h.isCarried())
 					  {
@@ -262,7 +257,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 		    	 {
 		    		 res.getNeo().setDamage(res.getNeo().getDamage()-20);//should not be below zero
 
-		    		 for(Hostage h:res.getHostages())
+		    		 for(Hostage h:host_loc)
 		    		 {
 		    			 if(!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive())
 		    			 {
@@ -288,16 +283,29 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 			    		res.removeAgent(l);
 			    	}
 			    }
-		    for(Hostage h:res.getHostages())
-		    {
-		    	if(!h.isAlive() && h.getLocation().adjacent(res.getNeo().getLocation()) && !h.getLocation().equals(res.getTeleBoothLoc()))
-		    	{
-		    		res.removeHostage(h);
-		    	}
-		    }
-		    break;
+			    for(Hostage h:host_loc)
+			    {
+			    	if(!h.isAlive() && h.getLocation().adjacent(res.getNeo().getLocation()) && !h.getLocation().equals(res.getTeleBoothLoc()))
+			    	{
+			    		res.removeHostage(h);
+			    	}
+			    }
+			    break;
 		  case FLY:
-			  // the definition of pads needs to be discussed
+			  HashMap<Location, Location> pads= res.getPadLocs();
+			  if(pads.containsKey(res.getNeo().getLocation()))
+			  {
+				  Location loc=pads.get(res.getNeo().getLocation());
+				  res.getNeo().setLocation(loc);
+				  for(Hostage h: host_loc)
+				  {
+					  if(h.isCarried())
+					  {
+						  h.setLocation(loc);
+					  }
+				  }
+				  
+			  }
 		    break;
 		  default:
 		}
@@ -339,7 +347,58 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
         return cost;
     }
-
+    public float GreedHeuristic1(MatrixState s)
+    {
+    	float cost = 0;
+    	Location tBooth =s.getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = s.getHostages(); //get hostages
+    	
+    	for(Hostage h: hostages)
+    	{
+    		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
+    		{
+    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    		}
+    	}
+    	return cost;
+    }
+    
+    public float GreedHeuristic2(MatrixState s)
+    {
+    	ArrayList<Hostage> hostages= s.getHostages();
+    	Location neo_loc=s.getNeo().getLocation();
+    	Location TB=s.getTeleBoothLoc();
+    	return gh2helper(hostages,neo_loc,TB);//pass by value
+    }
+    private  float gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
+    {
+    	if(hostages.size()==1)
+    	{
+    		Location last=hostages.get(0).getLocation();
+    		int manhatten=(neo_loc.getX()-last.getX())^2+(neo_loc.getY()-last.getY())^2  +  (last.getX()-TB.getX())^2+(last.getY()-TB.getY())^2;
+    		
+    		return manhatten;
+    	}
+    	else
+    	{
+    		int indx=0;
+        	int min_distance=Integer.MAX_VALUE;
+        	for(int i=0;i<hostages.size();i++)
+        	{
+        		Hostage h=hostages.get(i);
+        		int manhatten=(neo_loc.getX()-h.getLocation().getX())^2+(neo_loc.getY()-h.getLocation().getY())^2;
+        		if(manhatten<min_distance)
+        		{
+        			min_distance=manhatten;
+        			indx=i;
+        		}
+        	}
+        	neo_loc=hostages.get(indx).getLocation();
+        	hostages.remove(indx);
+        	return min_distance + gh2helper(hostages,neo_loc,TB);
+        	
+    	}
+    }
     // ==========================Getters-and-Setters==========================
 
     public MatrixState getInitialState() {
