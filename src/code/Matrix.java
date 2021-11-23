@@ -49,7 +49,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      *                  undergoes the different steps of the discovered solution
      * @return a String of the following format: plan;deaths;kills;nodes where
      */
-    public static String solve(String grid, String strategy, boolean visualize) {
+    public static String solve(String grid, String strategy, boolean visualize) throws IOException, ClassNotFoundException {
         MatrixState currentState = Helpers.parseGrid(grid); //initial state
         Matrix problem = new Matrix(currentState); //initialize problem
 
@@ -135,11 +135,11 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * you will need at least one action to save each hostage.
      * Thus, this is guaranteed to be admissable.
      */
-    public int ASHeuristic1(Node n)
+    public int ASHeuristic1(MatrixState s)
     {
     	int cost = 0;
-    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
-    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	Location tBooth =s.getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = s.getHostages(); //get hostages
     	
     	for(Hostage h: hostages)
     	{
@@ -171,12 +171,12 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * teleporting a number of times and reaching the pad. This cost could be 
      * tremendous making the actual cost cheaper.  
      */
-    public int ASHeuristic2(Node n)
+    public int ASHeuristic2(MatrixState s)
     {
     	int cost = 0;
-    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
-    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
-        HashMap<Location, Location> padLocations = ((MatrixState) n.getState()).getPadLocs();
+    	Location tBooth =s.getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = s.getHostages(); //get hostages
+        HashMap<Location, Location> padLocations = s.getPadLocs();
     	int closestPadDist=Integer.MAX_VALUE; //the Manhattan distance between closest pad and telephone booth
     	
     	//calculate the Manhattan distance between closest pad and telephone booth
@@ -197,11 +197,11 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     	return cost;
     }
     
-    public int GreedHeuristic1(Node n)
+    public int GreedHeuristic1(MatrixState s)
     {
     	int cost = 0;
-    	Location tBooth =((MatrixState) n.getState()).getTeleBoothLoc(); //get telephone booth location
-    	ArrayList<Hostage> hostages = ((MatrixState) n.getState()).getHostages(); //get hostages
+    	Location tBooth =s.getTeleBoothLoc(); //get telephone booth location
+    	ArrayList<Hostage> hostages = s.getHostages(); //get hostages
     	
     	for(Hostage h: hostages)
     	{
