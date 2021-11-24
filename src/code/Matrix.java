@@ -1,8 +1,8 @@
 package code;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * class representing the matrix problem.
@@ -34,7 +34,99 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     public static String genGrid() {
         StringBuilder grid = new StringBuilder();
 
-        //TODO: Ahmed
+        // The dimensions of the grid
+        Location gridDims = new Location(Helpers.randInt(5, 15), Helpers.randInt(5, 15));
+        grid.append(gridDims.getX()).append(",").append(gridDims.getY()).append(";");
+
+
+        // Carry capacity
+        int c = Helpers.randInt(1, 4);
+        grid.append(c).append(";");
+
+        // All possible locations;
+        ArrayList<Location> locations = new ArrayList<>();
+        for (int i = 0; i < gridDims.getX(); i++){
+            for (int j = 0; j < gridDims.getY(); j++) {
+                locations.add(new Location(i, j));
+            }
+        }
+
+        // Shuffle locations
+        Collections.shuffle(locations);
+
+        // Add the shuffled locations to a queue
+        Queue<Location> locQ = new LinkedList<>(locations);
+
+        // Neo location
+        Location neoLoc = locQ.poll();
+        grid.append(neoLoc.getX()).append(",").append(neoLoc.getY()).append(";");
+
+        // Telephone booth location
+        Location tbLoc = locQ.poll();
+        grid.append(tbLoc.getX()).append(",").append(tbLoc.getY()).append(";");
+
+        // Number of hostages
+        int hostageNum = Helpers.randInt(3, 10);
+
+        // Number of pills
+        int pillNum = Helpers.randInt(0, hostageNum);
+
+        // Number of objects allowed on the grid (should be at least 3)
+        int numAllowed = gridDims.getX() * gridDims.getY() - 2 - pillNum - hostageNum;
+
+        // Agents
+        int agentNum = Helpers.randInt(0, numAllowed);
+        numAllowed = Math.max(0, numAllowed - agentNum);
+
+        for (int i = 0; i < agentNum; i++) {
+            Location agentLoc = locQ.poll();
+            grid.append(agentLoc.getX()).append(",").append(agentLoc.getY());
+
+            if (i < agentNum - 1)
+                grid.append(",");
+        }
+        grid.append(";");
+
+        // Pills
+        for (int i = 0; i < pillNum; i++) {
+            Location pillLoc = locQ.poll();
+            grid.append(pillLoc.getX()).append(",").append(pillLoc.getY());
+
+            if (i < pillNum - 1)
+                grid.append(",");
+        }
+        grid.append(";");
+
+
+        // Pads. Has to be an even number
+        int padNum =  Helpers.randInt(0, numAllowed);
+        padNum -= padNum % 2;
+
+        for (int i = 0; i < padNum / 2; i++) {
+            Location padSrc = locQ.poll();
+            Location padDst = locQ.poll();
+            grid.append(padSrc.getX()).append(",").append(padSrc.getY()).append(",");
+            grid.append(padDst.getX()).append(",").append(padDst.getY()).append(",");
+
+            grid.append(padSrc.getX()).append(",").append(padSrc.getY()).append(",");
+            grid.append(padDst.getX()).append(",").append(padDst.getY());
+
+            if (i < (padNum / 2) - 1)
+                grid.append(",");
+        }
+        grid.append(";");
+        
+        //Hostages
+        for (int i = 0; i < hostageNum; i++) {
+            Location hostageLoc = locQ.poll();
+            int damage = Helpers.randInt(1, 99);
+
+            grid.append(hostageLoc.getX()).append(",").append(hostageLoc.getY())
+                    .append(",").append(damage);
+
+            if (i < hostageNum - 1)
+                grid.append(",");
+        }
 
         return grid.toString();
     }

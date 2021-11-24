@@ -10,8 +10,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
-//import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
-
 public class Search {
 
 
@@ -124,15 +122,41 @@ public class Search {
     }
 
     public static Node<MatrixState, MatrixOperator>
-    UCS(Matrix problem, Node<MatrixState, MatrixOperator> root) {
+    UCS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
+        HashSet<MatrixState> visitedStates = new HashSet<>();
+
+        visitedStates.add(root.getState());
         Q.add(root);
+
+        int expandedNodes = 0;
 
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
             if (problem.isGoal(head.getState())) return head;
 
-            // TODO: Ahmed | Enqueue nodes
+            // Not a goal, expand node
+            expandedNodes++;
+
+            // All possible actions from current state
+            ArrayList<MatrixOperator> actions = problem.actions(head.getState());
+
+            //current action
+            for (MatrixOperator action : actions) {
+                MatrixState result = problem.result(head.getState(), action); //state resulting from action
+                int[] stepCost = problem.stepCost(head.getState(), action, result);
+                int[] pathCost = head.getPathCost();
+                pathCost[0] += stepCost[0];
+                pathCost[1] += stepCost[1];
+
+                // if state is not repeated
+                if (!visitedStates.contains(result)) {
+                    Node<MatrixState, MatrixOperator> child = new Node<>(result, head, action, pathCost,
+                            0, head.getDepth() + 1);
+                    Q.add(child); //added to queue
+                    visitedStates.add(result); // state marked as visited to avoid adding it to queue again
+                }
+            }
         }
 
         // null == failure
