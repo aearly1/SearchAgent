@@ -1,5 +1,6 @@
 package code;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +10,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+//import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 public class Search {
 
@@ -246,6 +247,6 @@ public class Search {
 
 
     public static void main(String[] args) {
-    	
+    	System.out.print("lol");
     }
 }

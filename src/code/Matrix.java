@@ -436,7 +436,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         	
     	}
     }
-=======
+
     /**
      * The second A* heuristic assigns a cost value that corresponds
      * to the sum of the MINIMUM required steps to carry EACH unsaved 
