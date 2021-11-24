@@ -2,13 +2,7 @@ package code;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class Search {
 
@@ -52,8 +46,8 @@ public class Search {
     }
 
     public static Node<MatrixState, MatrixOperator>
-    BFS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException{
-    	HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
+    BFS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
+        HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
         Queue<Node<MatrixState, MatrixOperator>> Q = new LinkedList<>();
         Q.add(root);
         expandedStates.add(root.getState());
@@ -63,18 +57,16 @@ public class Search {
 
             // TODO: Basant | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
-            for(MatrixOperator a: possibleActions)
-            {
-            	MatrixState possibleState = problem.result(head.getState(), a);
-            	if(!expandedStates.contains(possibleState))
-            	{
-            		int[] cost= new int[2];
-            		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-            		cost[1]=head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
-            		Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth()+1);
-            		Q.add(newNode);
-            		expandedStates.add(possibleState);
-            	}
+            for (MatrixOperator a : possibleActions) {
+                MatrixState possibleState = problem.result(head.getState(), a);
+                if (!expandedStates.contains(possibleState)) {
+                    int[] cost = new int[2];
+                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth() + 1);
+                    Q.add(newNode);
+                    expandedStates.add(possibleState);
+                }
             }
         }
 
@@ -84,7 +76,7 @@ public class Search {
 
     public static Node<MatrixState, MatrixOperator>
     DFS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
-    	HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
+        HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
         Stack<Node<MatrixState, MatrixOperator>> S = new Stack<>();
         S.add(root);
         expandedStates.add(root.getState());
@@ -94,18 +86,16 @@ public class Search {
 
             // TODO: Basant | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
-            for(MatrixOperator a: possibleActions)
-            {
-            	MatrixState possibleState = problem.result(head.getState(), a);
-            	if(!expandedStates.contains(possibleState))
-            	{
-            		int[] cost= new int[2];
-            		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-            		cost[1]=head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
-            		Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth()+1);
-            		S.push(newNode);
-            		expandedStates.add(possibleState);
-            	}
+            for (MatrixOperator a : possibleActions) {
+                MatrixState possibleState = problem.result(head.getState(), a);
+                if (!expandedStates.contains(possibleState)) {
+                    int[] cost = new int[2];
+                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth() + 1);
+                    S.push(newNode);
+                    expandedStates.add(possibleState);
+                }
             }
         }
 
@@ -113,30 +103,40 @@ public class Search {
         return null;
     }
 
-    public static Node<MatrixState, MatrixOperator>
-    IDS(Matrix problem, Node<MatrixState, MatrixOperator> root) {
-        //TODO: Ahmed
+    public static Object[] IDS(Matrix problem, Node<MatrixState, MatrixOperator> root, int maxDepth)
+            throws IOException, ClassNotFoundException {
+        Object[] DLSResult;
+        int expandedNodes = 0;
 
-        // null == failure
-        return null;
+        // Perform limited depth search until we reach the specified maximum depth
+        for (int i = 0; i < maxDepth + 1; i++) {
+            DLSResult = DLS(problem, root, i); // goal node and number of expanded nodes
+            expandedNodes += (int) DLSResult[1]; // add the number of expanded nodes to the total
+            DLSResult[1] = expandedNodes;
+
+            if (DLSResult[0] != null) return DLSResult; // if goal is found
+        }
+
+        // null goal node == failure
+        return new Object[]{null, expandedNodes};
     }
 
-    public static Node<MatrixState, MatrixOperator>
-    UCS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
+    public static Object[] UCS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
         HashSet<MatrixState> visitedStates = new HashSet<>();
-
-        visitedStates.add(root.getState());
-        Q.add(root);
-
         int expandedNodes = 0;
+
+        Q.add(root);
+        visitedStates.add(root.getState());
 
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
-            if (problem.isGoal(head.getState())) return head;
 
-            // Not a goal, expand node
+            // Expand node
             expandedNodes++;
+
+            if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
+
 
             // All possible actions from current state
             ArrayList<MatrixOperator> actions = problem.actions(head.getState());
@@ -160,13 +160,13 @@ public class Search {
         }
 
         // null == failure
-        return null;
+        return new Object[]{null, expandedNodes};
     }
 
     public static Node<MatrixState, MatrixOperator>
     GR(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws ClassNotFoundException, IOException {
 //    	HashSet<Node<MatrixState,MatrixOperator>> expanded_nodes=new HashSet<Node<MatrixState,MatrixOperator>>();
-    	HashSet<MatrixState> expanded_nodes=new HashSet<MatrixState>();
+        HashSet<MatrixState> expanded_nodes = new HashSet<MatrixState>();
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
         root.setgreedy(true);
         Q.add(root);
@@ -174,31 +174,26 @@ public class Search {
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
             if (problem.isGoal(head.getState())) return head;
-            ArrayList <MatrixOperator> possible_actions = problem.actions(head.getState());
-            for (MatrixOperator x : possible_actions)
-            {
-            	MatrixState new_state=problem.result(head.getState(), x);
-            	if(!expanded_nodes.contains(new_state))
-            	{
-                	int[]cost = new int[2];
-                	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
-                	cost[1] = problem.stepCost(head.getState(), x, new_state)[1]+head.getPathCost()[1];
-                	float hur_value=0;
-                	
-                	if(heuristicNum == 1)
-                	{
-                		hur_value = problem.GreedHeuristic1(new_state);
-                	}
-                	else
-                	{
-                		hur_value = problem.GreedHeuristic2(new_state);
-                	}
-                	
-                	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
-                	result_node.setgreedy(true);
-            		Q.add(result_node);
-            		expanded_nodes.add(new_state);
-            	}
+            ArrayList<MatrixOperator> possible_actions = problem.actions(head.getState());
+            for (MatrixOperator x : possible_actions) {
+                MatrixState new_state = problem.result(head.getState(), x);
+                if (!expanded_nodes.contains(new_state)) {
+                    int[] cost = new int[2];
+                    cost[0] = problem.stepCost(head.getState(), x, new_state)[0] + head.getPathCost()[0];
+                    cost[1] = problem.stepCost(head.getState(), x, new_state)[1] + head.getPathCost()[1];
+                    float hur_value = 0;
+
+                    if (heuristicNum == 1) {
+                        hur_value = problem.GreedHeuristic1(new_state);
+                    } else {
+                        hur_value = problem.GreedHeuristic2(new_state);
+                    }
+
+                    Node<MatrixState, MatrixOperator> result_node = new Node<MatrixState, MatrixOperator>(new_state, head, x, cost, hur_value, head.getDepth() + 1);
+                    result_node.setgreedy(true);
+                    Q.add(result_node);
+                    expanded_nodes.add(new_state);
+                }
 //            	MatrixState new_state=problem.result(head.getState(), x);
 //            	int[]cost = new int[2];
 //            	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
@@ -230,7 +225,7 @@ public class Search {
 
     public static Node<MatrixState, MatrixOperator>
     AS(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws IOException, ClassNotFoundException {
-    	HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
+        HashSet<MatrixState> expandedStates = new HashSet<MatrixState>();
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
         Q.add(root);
         expandedStates.add(root.getState());
@@ -241,27 +236,22 @@ public class Search {
 
             // TODO: Ali | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
-            for(MatrixOperator a: possibleActions)
-            {
-            	MatrixState possibleState = problem.result(head.getState(), a);
-            	if(!expandedStates.contains(possibleState))
-            	{
-            		int[] cost= new int[2];
-            		cost[0]=head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-            		cost[1]=head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
-            		int heuristic = 0;
-            		if(heuristicNum==1)
-            		{
-            			heuristic=problem.ASHeuristic1(possibleState);
-            		}
-            		else if(heuristicNum==2)
-            		{
-            			heuristic=problem.ASHeuristic2(possibleState);
-            		}
-            		Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, heuristic, head.getDepth()+1);
-            		Q.add(newNode);
-            		expandedStates.add(possibleState);
-            	}
+            for (MatrixOperator a : possibleActions) {
+                MatrixState possibleState = problem.result(head.getState(), a);
+                if (!expandedStates.contains(possibleState)) {
+                    int[] cost = new int[2];
+                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    int heuristic = 0;
+                    if (heuristicNum == 1) {
+                        heuristic = problem.ASHeuristic1(possibleState);
+                    } else if (heuristicNum == 2) {
+                        heuristic = problem.ASHeuristic2(possibleState);
+                    }
+                    Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, heuristic, head.getDepth() + 1);
+                    Q.add(newNode);
+                    expandedStates.add(possibleState);
+                }
             }
         }
 
@@ -269,8 +259,46 @@ public class Search {
         return null;
     }
 
+    public static Object[] DLS(Matrix problem, Node<MatrixState, MatrixOperator> root, int d)
+            throws IOException, ClassNotFoundException {
+        HashSet<MatrixState> visitedStates = new HashSet<>();
+        Stack<Node<MatrixState, MatrixOperator>> S = new Stack<>();
+        int expandedNodes = 0;
+
+        S.push(root);
+        visitedStates.add(root.getState());
+
+        while (!S.isEmpty()) {
+            Node<MatrixState, MatrixOperator> head = S.pop();
+
+            // Expand node
+            expandedNodes++;
+
+            if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
+            if (head.getDepth() == d) continue; // maximum depth reached
+
+
+            // All possible actions from current state
+            ArrayList<MatrixOperator> actions = problem.actions(head.getState());
+
+            //current action
+            for (MatrixOperator action : actions) {
+                MatrixState result = problem.result(head.getState(), action); //state resulting from action
+
+                // if state is not repeated and is not maximum depth
+                if (!visitedStates.contains(result)) {
+                    Node<MatrixState, MatrixOperator> child = new Node<>(result, head, action, new int[]{0, 0},
+                            0, head.getDepth() + 1);
+                    S.add(child); //added to stack
+                    visitedStates.add(result); // state marked as visited to avoid adding it to queue again
+                }
+            }
+        }
+
+        return new Object[]{null, expandedNodes};
+    }
 
     public static void main(String[] args) {
-    	System.out.print("lol");
+        System.out.print("lol");
     }
 }
