@@ -362,7 +362,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         {
         	for(Hostage h: s1.getHostages())
         	{
-        		if(h.getDamage()==1 || h.getDamage()==2)// check if the damage will become 0 in the new state
+        		if(h.getDamage()==98 || h.getDamage()==99)// check if the damage will become 100 in the new state
         		{
         			cost[0]++; // increment the number of killed hostages
         		}
