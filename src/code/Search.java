@@ -183,7 +183,7 @@ public class Search {
                 	int[]cost = new int[2];
                 	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
                 	cost[1] = problem.stepCost(head.getState(), x, new_state)[1]+head.getPathCost()[1];
-                	float hur_value=0;
+                	int hur_value=0;
                 	
                 	if(heuristicNum == 1)
                 	{

@@ -492,19 +492,19 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     }
     
 
-    public float GreedHeuristic2(MatrixState s)
+    public int GreedHeuristic2(MatrixState s)
     {
     	ArrayList<Hostage> hostages= s.getHostages();
     	Location neo_loc=s.getNeo().getLocation();
     	Location TB=s.getTeleBoothLoc();
     	return gh2helper(hostages,neo_loc,TB);//pass by value
     }
-    private  float gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
+    private  int gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
     {
     	if(hostages.size()==1)
     	{
     		Location last=hostages.get(0).getLocation();
-    		int manhatten=Math.abs(neo_loc.getX()-last.getX())^2+(neo_loc.getY()-last.getY())  +  Math.abs(last.getX()-TB.getX())^2+(last.getY()-TB.getY());
+    		int manhatten=Math.abs(neo_loc.getX()-last.getX())+(neo_loc.getY()-last.getY())  +  Math.abs(last.getX()-TB.getX())+(last.getY()-TB.getY());
     		
     		return manhatten;
     	}
