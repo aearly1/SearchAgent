@@ -48,8 +48,12 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * @param visualize if true prints a visual presentation of the grid as it
      *                  undergoes the different steps of the discovered solution
      * @return a String of the following format: plan;deaths;kills;nodes where
+     * @throws IOException 
+     * @throws ClassNotFoundException 
      */
+
     public static String solve(String grid, String strategy, boolean visualize) throws IOException, ClassNotFoundException {
+
         MatrixState currentState = Helpers.parseGrid(grid); //initial state
         Matrix problem = new Matrix(currentState); //initialize problem
 
@@ -73,15 +77,257 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         ArrayList<MatrixOperator> operators = new ArrayList<>();
 
         //TODO: Moataz
+        Location neo_loc=s.getNeo().getLocation();
+        Location dims=s.getGridDims();   //////////////// dims should be the location of the last cell in the grid (top right cell)
+        ArrayList<Location> agents=s.getAgentLocs();  /// locations of the remaining agents in the matrix
+        ArrayList<Hostage> hostages = s.getHostages(); //=== current hostages
+        ArrayList <Location>pil_loc = s.getPillLocs(); //== pills locations
+        HashMap<Location, Location> fly_loc = s.getPadLocs(); //== fly pads locations
+        //=============movement=============
+        
+        
+        if(neo_loc.getX()<dims.getX() && !agents.contains(new Location(neo_loc.getX()+1,neo_loc.getY())) && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.RIGHT))
+        {
+        	operators.add(MatrixOperator.RIGHT);
+        }
+        if(neo_loc.getX()>1 && !agents.contains(new Location(neo_loc.getX()-1,neo_loc.getY()))  && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.LEFT))
+        {
+        	operators.add(MatrixOperator.LEFT);
+        }
+        if(neo_loc.getY()<dims.getY() && !agents.contains(new Location(neo_loc.getX(),neo_loc.getY()+1))  && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.UP))
+        {
+        	operators.add(MatrixOperator.UP);
+        }
+        if(neo_loc.getY()>1 && !agents.contains(new Location(neo_loc.getX(),neo_loc.getY()-1))  && !Helpers.hostage98(neo_loc, hostages , MatrixOperator.DOWN))
+        {
+        	operators.add(MatrixOperator.DOWN);
+        }
+        //================== hostage==============
+        for (Hostage h : hostages)
+        {
+        	if(h.getLocation().equals(neo_loc) && h.getDamage()<100 && !h.isCarried() && s.getNeo().getCurrentCapacity()>0 && !neo_loc.equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.CARRY))
+        	{
+        		operators.add(MatrixOperator.CARRY);
+        		
+        	}
+        	
+        	if(h.isCarried() && neo_loc.equals(s.getTeleBoothLoc())&& !operators.contains(MatrixOperator.DROP))
+        	{
+        		operators.add(MatrixOperator.DROP);
+        		
+        	}
+        	
+        	if(h.getDamage()>=100 && !h.isCarried() && h.getLocation().adjacent(neo_loc) && !h.getLocation().equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.KILL))
+        	{
+        		operators.add(MatrixOperator.KILL);
+        		
+        	}
+        }
 
+        //=================kill all agents in neighbouring cells===============
+        for (Location l:agents)
+        {
+        	if(neo_loc.adjacent(l) && !operators.contains(MatrixOperator.KILL))
+        	{
+        		operators.add(MatrixOperator.KILL);
+        		break;
+        	}
+        }
+        //================ take a pill=======================================
+        
+        for(Location l : pil_loc)
+        {
+        	if(neo_loc.equals(l))
+        	{
+        		operators.add(MatrixOperator.TAKE_PILL);
+        		break;
+        	}
+        }
+        //================ fly =======================================
+        
+        if (fly_loc.containsKey(neo_loc))
+        {
+        	operators.add(MatrixOperator.FLY);
+        }
         return operators;
     }
 
     @Override
     public MatrixState result(MatrixState s, MatrixOperator a) throws IOException, ClassNotFoundException {
-        MatrixState res = s.copy();
+    	//=====updates the state of the whole world
+        //movement neo + carried hostages
+        //carry // to know which hostage and update the hostage state
+        //drop // to know which hostages and to remove them from the world + update c of neo
+        //kill all agents in neighbouring cells to know which agents and reduce neo health //Player damage +20 after agent kill
+        //take a pill to know which pill and update neo health + all alive carried hostages
+        //fly to know which pad and update neo location with all the carried hostages
+    	MatrixState res = s.copy();
+		Location new_loc;
+		ArrayList<Hostage> host_loc=res.getHostages();
+		switch(a) {
+		  case UP:
+			new_loc=new Location(res.getNeo().getLocation().getX(),res.getNeo().getLocation().getY()+1);
+		    res.getNeo().setLocation(new_loc);
+		    for(Hostage h : host_loc)
+			{
+		    	if(h.isCarried())
+		    	{
+		    		h.setLocation(new_loc);
+		    	}
+				
+			}
+		    break;
+		  case DOWN:
+			  new_loc=new Location(res.getNeo().getLocation().getX(),res.getNeo().getLocation().getY()-1);
+			  res.getNeo().setLocation(new_loc);
+		      for(Hostage h : host_loc)
+			  {
+		    	  if(h.isCarried())
+			    	{
+			    		h.setLocation(new_loc);
+			    	}
+			  }
+		    break;
+		  case LEFT:
+			  new_loc=new Location(res.getNeo().getLocation().getX()-1,res.getNeo().getLocation().getY());
+			  res.getNeo().setLocation(new_loc);
+		      for(Hostage h : host_loc)
+			  {
+		    	  if(h.isCarried())
+			    	{
+			    		h.setLocation(new_loc);
+			    	}
+			  }
+		    break;
+		  case RIGHT:
+			  new_loc=new Location(res.getNeo().getLocation().getX()+1,res.getNeo().getLocation().getY());
+			  res.getNeo().setLocation(new_loc);
+		      for(Hostage h : host_loc)
+			  {
+		    	  if(h.isCarried())
+			    	{
+			    		h.setLocation(new_loc);
+			    	}
+			  }
+		    break;
+		  case CARRY:
+			  // i can carry a hostage if
+			  		// he is alive *
+			  		// he is same location as neo *
+			  		// he is not at the TB *
+			  		// neo can carry -> in actions
+			  		// is not carried *
+		      for(Hostage h : host_loc)
+			  {
+				  if(h.getLocation().equals(res.getNeo().getLocation()) && !h.getLocation().equals(res.getTeleBoothLoc()) && !h.isCarried() && h.getDamage()<100)
+				  {
+					  h.setCarried(true);
+					  res.getNeo().decCurrentCapacity();
+					  break;
+				  }
+			  }
+		    break;
+		  case DROP:
+			  // i can dropp if
+			  		// i a at the TB
+			  		// i am carrying hostages
+			  //what will happen
+			  		// all carried hostages will be dropped AND neo c will increment
+			  if(res.getNeo().getLocation().equals(res.getTeleBoothLoc()))
+			  {
+				  for(Hostage h : host_loc)
+				  {
+					  if(h.isCarried())
+					  {
+						  h.setCarried(false);
+						  res.getNeo().incCurrentCapacity();
+						  
+					  }
+				  }
+			  }
+		      
+		    break;
+		  case TAKE_PILL:
+			  //i can take pill if
+			  		// i am at the same location of the bill
+			  // what will happen
+			  		// my health AND the Health of all alive hostages will increment 
+			  		// remove the pill from the world
+		     for(Location l : res.getPillLocs())
+		     {
+		    	 if(l.equals(res.getNeo().getLocation()))
+		    	 {
+		    		 res.getNeo().setDamage(res.getNeo().getDamage()-20);//should not be below zero
 
-        //TODO: Moataz
+		    		 for(Hostage h:host_loc)
+		    		 {
+		    			 if(!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive())
+		    			 {
+		    					 h.setDamage(h.getDamage()-22);
+		    				
+		    			 }
+		    		 }
+		    		 res.removePill(l);
+		    	 }
+		     }
+		    break;
+		    
+		  case KILL:
+			  //i can kill a someone if
+			  		//he is an adjacent agent
+			  		//he is adjacent turned hostage
+			  //FOR ALL ADJECENT AGENTS AND TURNED HOSTAGEE  remove these agents+hostages form the game and update neo health
+			  res.getNeo().setDamage(res.getNeo().getDamage()+20);
+			  for(Location l : res.getAgentLocs())
+			    {
+			    	if(l.adjacent(res.getNeo().getLocation()))
+			    	{
+			    		res.removeAgent(l);
+			    	}
+			    }
+			    for(Hostage h:host_loc)
+			    {
+			    	if(!h.isAlive() && h.getLocation().adjacent(res.getNeo().getLocation()) && !h.getLocation().equals(res.getTeleBoothLoc()))
+			    	{
+			    		res.removeHostage(h);
+			    	}
+			    }
+			    break;
+		  case FLY:
+			  HashMap<Location, Location> pads= res.getPadLocs();
+			  if(pads.containsKey(res.getNeo().getLocation()))
+			  {
+				  Location loc=pads.get(res.getNeo().getLocation());
+				  res.getNeo().setLocation(loc);
+				  for(Hostage h: host_loc)
+				  {
+					  if(h.isCarried())
+					  {
+						  h.setLocation(loc);
+					  }
+				  }
+				  
+			  }
+		    break;
+		  default:
+		}
+        
+        //================================ updating the world =============================
+				// update the damage of a hostage iff
+					// he is not at the TB 
+					// he is a not a turned hostage
+					// not dead and carried by neo
+					//Equivalent to
+					// all alive hostages that are not at the TB
+		for(Hostage h : res.getHostages())//Hostage damage +2 after action
+		{
+			if(!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive())
+			{
+				h.setDamage(h.getDamage()+2);
+			}
+			
+		}
+       
 
         return res;
     }
@@ -128,7 +374,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
         return cost;
     }
-    
+
     /**
      * The first A* heuristic assigns a cost value that corresponds
      * to the total number of unsaved (and ALIVE) hostages since
@@ -138,6 +384,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     public int ASHeuristic1(MatrixState s)
     {
     	int cost = 0;
+
     	Location tBooth =s.getTeleBoothLoc(); //get telephone booth location
     	ArrayList<Hostage> hostages = s.getHostages(); //get hostages
     	
@@ -145,12 +392,51 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     	{
     		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
     		{
+
     			cost++; //increment cost since this is an unsaved hostage
     		}
     	}
     	return cost;
     }
     
+
+    public float GreedHeuristic2(MatrixState s)
+    {
+    	ArrayList<Hostage> hostages= s.getHostages();
+    	Location neo_loc=s.getNeo().getLocation();
+    	Location TB=s.getTeleBoothLoc();
+    	return gh2helper(hostages,neo_loc,TB);//pass by value
+    }
+    private  float gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
+    {
+    	if(hostages.size()==1)
+    	{
+    		Location last=hostages.get(0).getLocation();
+    		int manhatten=(neo_loc.getX()-last.getX())^2+(neo_loc.getY()-last.getY())^2  +  (last.getX()-TB.getX())^2+(last.getY()-TB.getY())^2;
+    		
+    		return manhatten;
+    	}
+    	else
+    	{
+    		int indx=0;
+        	int min_distance=Integer.MAX_VALUE;
+        	for(int i=0;i<hostages.size();i++)
+        	{
+        		Hostage h=hostages.get(i);
+        		int manhatten=(neo_loc.getX()-h.getLocation().getX())^2+(neo_loc.getY()-h.getLocation().getY())^2;
+        		if(manhatten<min_distance)
+        		{
+        			min_distance=manhatten;
+        			indx=i;
+        		}
+        	}
+        	neo_loc=hostages.get(indx).getLocation();
+        	hostages.remove(indx);
+        	return min_distance + gh2helper(hostages,neo_loc,TB);
+        	
+    	}
+    }
+=======
     /**
      * The second A* heuristic assigns a cost value that corresponds
      * to the sum of the MINIMUM required steps to carry EACH unsaved 
@@ -212,6 +498,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     	}
     	return cost;
     }
+
 
     // ==========================Getters-and-Setters==========================
 

@@ -24,6 +24,7 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
     private int[] _pathCost;
     private float _heuristic;
     private int _depth;
+    private boolean _isgreedy;
 
     public Node(State state, Node parent, Operator action, int[] pathCost, float heuristic, int depth) {
         _state = state;
@@ -32,6 +33,7 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
         _pathCost = pathCost;
         _heuristic = heuristic;
         _depth = depth;
+        _isgreedy = false;
     }
 
     /**
@@ -49,11 +51,14 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
     }
 
     // ==========================Getters-and-Setters==========================
-
+    public void setgreedy(boolean isgreedy)
+    {
+    	_isgreedy = isgreedy;
+    }
     public State getState() {
         return _state;
     }
-
+    
     public void setState(State state) {
         _state = state;
     }
@@ -102,26 +107,47 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
 
     @Override
     public int compareTo(Node<State, Operator> node) {
-        float myTotal = this.getPathCost()[0] + this.getHeuristic();
-        float otherTotal = node.getPathCost()[0] + node.getHeuristic();
-
-        if (myTotal > otherTotal) {
-            // if current object is greater,then return 1
-            return 1;
-        } else if (myTotal < otherTotal) {
-            // if current object is less,then return -1
-            return -1;
-        } else {
-            myTotal += this.getPathCost()[1];
-            otherTotal += node.getPathCost()[1];
+    	if(!_isgreedy)
+    	{
+    		float myTotal = this.getPathCost()[0] + this.getHeuristic();
+            float otherTotal = node.getPathCost()[0] + node.getHeuristic();
 
             if (myTotal > otherTotal) {
+                // if current object is greater,then return 1
+                return 1;
+            } else if (myTotal < otherTotal) {
+                // if current object is less,then return -1
+                return -1;
+            } else {
+                myTotal += this.getPathCost()[1];
+                otherTotal += node.getPathCost()[1];
+
+                if (myTotal > otherTotal) {
+                    return 1;
+                } else if (myTotal < otherTotal) {
+                    // if current object is less,then return -1
+                    return -1;
+                }
+                return 0;
+            	}
+            
+        }
+    	else
+        {
+    		float myTotal = this.getHeuristic();
+            float otherTotal = node.getHeuristic();
+
+            if (myTotal > otherTotal) {
+                // if current object is greater,then return 1
                 return 1;
             } else if (myTotal < otherTotal) {
                 // if current object is less,then return -1
                 return -1;
             }
-            return 0;
+            else
+            {
+            	return 0;
+            }
         }
     }
 }

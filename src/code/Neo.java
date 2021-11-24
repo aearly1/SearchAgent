@@ -40,7 +40,11 @@ public class Neo {
     }
 
     public void setDamage(int damage) {
-        _damage = damage;
+    	if(damage<=0)
+    	{
+    		_damage=0;
+    	}
+    	_damage=damage;
     }
 
     public int getCurrentCapacity() {
