@@ -2,6 +2,7 @@ package code;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Helpers {
 
@@ -75,5 +76,9 @@ public class Helpers {
         Neo neo = new Neo(neoLoc, 0, c);
 
         return new MatrixState(dims, neo, hostages, agents, pads, pills, tbLoc);
+    }
+
+    public static int randInt(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 }
