@@ -492,19 +492,19 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     }
     
 
-    public float GreedHeuristic2(MatrixState s)
+    public int GreedHeuristic2(MatrixState s)
     {
     	ArrayList<Hostage> hostages= s.getHostages();
     	Location neo_loc=s.getNeo().getLocation();
     	Location TB=s.getTeleBoothLoc();
     	return gh2helper(hostages,neo_loc,TB);//pass by value
     }
-    private  float gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
+    private  int gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
     {
     	if(hostages.size()==1)
     	{
     		Location last=hostages.get(0).getLocation();
-    		int manhatten=(neo_loc.getX()-last.getX())^2+(neo_loc.getY()-last.getY())^2  +  (last.getX()-TB.getX())^2+(last.getY()-TB.getY())^2;
+    		int manhatten=Math.abs(neo_loc.getX()-last.getX())+(neo_loc.getY()-last.getY())  +  Math.abs(last.getX()-TB.getX())+(last.getY()-TB.getY());
     		
     		return manhatten;
     	}
@@ -515,7 +515,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         	for(int i=0;i<hostages.size();i++)
         	{
         		Hostage h=hostages.get(i);
-        		int manhatten=(neo_loc.getX()-h.getLocation().getX())^2+(neo_loc.getY()-h.getLocation().getY())^2;
+        		int manhatten=Math.abs(neo_loc.getX()-h.getLocation().getX())+ Math.abs(neo_loc.getY()-h.getLocation().getY());
         		if(manhatten<min_distance)
         		{
         			min_distance=manhatten;
@@ -601,7 +601,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     	{
     		if(!h.getLocation().equals(tBooth) && h.getDamage()<100) //check if this hostage is alive and unsaved
     		{
-    			cost+=(h.getLocation().getX()-tBooth.getX())^2 + (h.getLocation().getY()-tBooth.getY())^2; //add Manhattan distance to total cost 
+    			cost+=Math.abs(h.getLocation().getX()-tBooth.getX()) + Math.abs(h.getLocation().getY()-tBooth.getY()); //add Manhattan distance to total cost 
     		}
     	}
     	return cost;

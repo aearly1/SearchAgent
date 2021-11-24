@@ -174,26 +174,31 @@ public class Search {
         while (!Q.isEmpty()) {
             Node<MatrixState, MatrixOperator> head = Q.poll();
             if (problem.isGoal(head.getState())) return head;
-            ArrayList<MatrixOperator> possible_actions = problem.actions(head.getState());
-            for (MatrixOperator x : possible_actions) {
-                MatrixState new_state = problem.result(head.getState(), x);
-                if (!expanded_nodes.contains(new_state)) {
-                    int[] cost = new int[2];
-                    cost[0] = problem.stepCost(head.getState(), x, new_state)[0] + head.getPathCost()[0];
-                    cost[1] = problem.stepCost(head.getState(), x, new_state)[1] + head.getPathCost()[1];
-                    float hur_value = 0;
-
-                    if (heuristicNum == 1) {
-                        hur_value = problem.GreedHeuristic1(new_state);
-                    } else {
-                        hur_value = problem.GreedHeuristic2(new_state);
-                    }
-
-                    Node<MatrixState, MatrixOperator> result_node = new Node<MatrixState, MatrixOperator>(new_state, head, x, cost, hur_value, head.getDepth() + 1);
-                    result_node.setgreedy(true);
-                    Q.add(result_node);
-                    expanded_nodes.add(new_state);
-                }
+            ArrayList <MatrixOperator> possible_actions = problem.actions(head.getState());
+            for (MatrixOperator x : possible_actions)
+            {
+            	MatrixState new_state=problem.result(head.getState(), x);
+            	if(!expanded_nodes.contains(new_state))
+            	{
+                	int[]cost = new int[2];
+                	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
+                	cost[1] = problem.stepCost(head.getState(), x, new_state)[1]+head.getPathCost()[1];
+                	int hur_value=0;
+                	
+                	if(heuristicNum == 1)
+                	{
+                		hur_value = problem.GreedHeuristic1(new_state);
+                	}
+                	else
+                	{
+                		hur_value = problem.GreedHeuristic2(new_state);
+                	}
+                	
+                	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
+                	result_node.setgreedy(true);
+            		Q.add(result_node);
+            		expanded_nodes.add(new_state);
+            	}
 //            	MatrixState new_state=problem.result(head.getState(), x);
 //            	int[]cost = new int[2];
 //            	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
