@@ -81,4 +81,33 @@ public class Helpers {
     public static int randInt(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
+    
+    public static boolean hostage98(Location neo, ArrayList<Hostage> hostages,MatrixOperator operator)
+    {
+    	Location temp;
+    	switch(operator) {
+    	  case UP:
+    		  temp = new Location(neo.getX(),neo.getY()+1);
+    	    break;
+    	  case DOWN:
+    		  temp = new Location(neo.getX(),neo.getY()-1);
+    	    break;
+    	  case LEFT:
+    		  temp = new Location(neo.getX()-1,neo.getY());
+      	    break;
+    	  case RIGHT:
+    		  temp = new Location(neo.getX()+1,neo.getY());
+      	    break;
+    	  default:
+    		  temp=null;
+    	}
+    	for (Hostage h : hostages)
+    	{
+    		if(h.getLocation().equals(temp) && h.getDamage()==98)
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 }

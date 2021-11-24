@@ -42,7 +42,11 @@ public class Hostage {
     }
 
     public void setDamage(int damage) {
-        _damage = damage;
+    	if(damage<=0)
+    	{
+    		_damage=0;
+    	}
+    	_damage=damage;
     }
 
     public boolean isCarried() {
@@ -52,7 +56,10 @@ public class Hostage {
     public void setCarried(boolean carried) {
         _carried = carried;
     }
-
+    public boolean isAlive()
+    {
+    	return _damage==100;
+    }
     // ================================Hashing=================================
 
     @Override

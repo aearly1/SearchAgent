@@ -18,11 +18,13 @@ public class Neo {
     private Location _location;
     private int _damage;
     private int _currentCapacity;
+    private int _originalCapacity;
 
     public Neo(Location location, int damage, int currentCapacity){
         _location = location;
         _damage = damage;
         _currentCapacity = currentCapacity;
+        _originalCapacity = currentCapacity;
     }
 
     // ==========================Getters-and-Setters==========================
@@ -40,11 +42,19 @@ public class Neo {
     }
 
     public void setDamage(int damage) {
-        _damage = damage;
+    	if(damage<=0)
+    	{
+    		_damage=0;
+    	}
+    	_damage=damage;
     }
 
     public int getCurrentCapacity() {
         return _currentCapacity;
+    }
+    
+    public int getOriginalCapacity() {
+        return _originalCapacity;
     }
 
     // ============================Additional-Methods===========================
