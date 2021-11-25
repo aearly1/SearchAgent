@@ -436,7 +436,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         if (a != (MatrixOperator.TAKE_PILL))//check if the agent didn't take pill (if he did no hostage will die)
         {
             for (Hostage h : s1.getHostages()) {
-                if (h.getDamage() => 98)// check if the damage will become 100 in the new state
+                if (h.getDamage() >= 98)// check if the damage will become 100 in the new state
                 {
                     cost[0]++; // increment the number of killed hostages
                 }
