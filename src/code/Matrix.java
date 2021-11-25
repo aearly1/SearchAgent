@@ -446,7 +446,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         if(a==MatrixOperator.KILL)
         {
         	for (Hostage h : s1.getHostages()) {
-                if (s1.getNeo().getLocation().adjacent(h.getLocation()) && !h.isAlive() && !h.getLocation().equals(s1.getTeleBoothLoc()))// check if the damage will become 100 in the new state
+                if (s1.getNeo().getLocation().adjacent(h.getLocation()) && !h.isAlive() && (!h.getLocation().equals(s1.getTeleBoothLoc())|| (h.getLocation().equals(s1.getTeleBoothLoc())&&h.isCarried())))// check if the damage will become 100 in the new state
                 {
                     killedHostages++; // increment the number of killed hostages
                 }
