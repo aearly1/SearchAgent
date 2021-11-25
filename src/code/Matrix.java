@@ -150,18 +150,20 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         Matrix problem = new Matrix(currentState); //initialize problem
 
         //solve the problem
-        Node<MatrixState, MatrixOperator> foundGoal = Search.searchProcedure(problem, strategy);
+        Object[] searchRes = Search.searchProcedure(problem, strategy);
+		Node<MatrixState, MatrixOperator> goalNode = null;
+		int expandedNodes = (int) searchRes[1];
+		if (searchRes[0] != null) goalNode = (Node<MatrixState, MatrixOperator>) searchRes[0];
 
-        //output string
-        StringBuilder ret = new StringBuilder();
 
-        //TODO: Ahmed | Get output string
+		//output string
+        String ret = Helpers.solutionStr(goalNode, expandedNodes);
 
-        if(visualize){
+        if (visualize){
             //TODO: Ahmed | visualize solution steps
         }
 
-        return ret.toString();
+        return ret;
     }
 
     @Override

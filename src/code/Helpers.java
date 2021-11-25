@@ -81,33 +81,105 @@ public class Helpers {
     public static int randInt(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
-    
-    public static boolean hostage98(Location neo, ArrayList<Hostage> hostages,MatrixOperator operator)
-    {
-    	Location temp;
-    	switch(operator) {
-    	  case UP:
-    		  temp = new Location(neo.getX(),neo.getY()+1);
-    	    break;
-    	  case DOWN:
-    		  temp = new Location(neo.getX(),neo.getY()-1);
-    	    break;
-    	  case LEFT:
-    		  temp = new Location(neo.getX()-1,neo.getY());
-      	    break;
-    	  case RIGHT:
-    		  temp = new Location(neo.getX()+1,neo.getY());
-      	    break;
-    	  default:
-    		  temp=null;
-    	}
-    	for (Hostage h : hostages)
-    	{
-    		if(h.getLocation().equals(temp) && h.getDamage()==98)
-    		{
-    			return true;
-    		}
-    	}
-    	return false;
+
+    public static boolean hostage98(Location neo, ArrayList<Hostage> hostages, MatrixOperator operator) {
+        Location temp;
+        switch (operator) {
+            case UP:
+                temp = new Location(neo.getX(), neo.getY() + 1);
+                break;
+            case DOWN:
+                temp = new Location(neo.getX(), neo.getY() - 1);
+                break;
+            case LEFT:
+                temp = new Location(neo.getX() - 1, neo.getY());
+                break;
+            case RIGHT:
+                temp = new Location(neo.getX() + 1, neo.getY());
+                break;
+            default:
+                temp = null;
+        }
+        for (Hostage h : hostages) {
+            if (h.getLocation().equals(temp) && h.getDamage() == 98) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Constructs the output string of the solve method.
+     *
+     * @param goal          goal node found by the search algorithm
+     * @param expandedNodes number of expanded nodes during the search
+     * @return A String of the following format: plan;deaths;kills;nodes where
+     * - plan is a string representing the operators Neo needs to follow separated by commas.
+     * The possible operator names are: up, down, left, right, carry, drop, takePill, kill, and fly.
+     * – deaths is a number representing the number of dead hostages in the found goal state
+     * (whether they turned into agents or not).
+     * – kills is a number representing the number of killed agents in the found goal state
+     * (including the number of agents that were hostages before).
+     * – nodes is the number of nodes chosen for expansion during the search.
+     */
+    public static String solutionStr(Node<MatrixState, MatrixOperator> goal, int expandedNodes) {
+        StringBuilder ret = new StringBuilder();
+
+        Node<MatrixState, MatrixOperator> head = goal;
+
+        // Add actions in reverse
+        while (head != null && head.getParent() != null) {
+            switch (goal.getAction()) {
+                case UP:
+                    ret.append("pu,");
+                    break;
+                case DOWN:
+                    ret.append("nwod,");
+                    break;
+                case LEFT:
+                    ret.append("tfel,");
+                    break;
+                case RIGHT:
+                    ret.append("thgir,");
+                    break;
+                case CARRY:
+                    ret.append("yrrac,");
+                    break;
+                case DROP:
+                    ret.append("pord,");
+                    break;
+                case TAKE_PILL:
+                    ret.append("lliPekat,");
+                    break;
+                case KILL:
+                    ret.append("llik,");
+                    break;
+                case FLY:
+                    ret.append("ylf,");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Remove last comma
+        ret.setLength(Math.max(ret.length() - 1, 0));
+
+        // Reverse string and add semicolon
+        ret.reverse();
+        ret.append(";");
+
+        // Deaths
+        if (goal != null) ret.append(goal.getPathCost()[0]);
+        ret.append(";");
+
+        // Kills
+        if (goal != null) ret.append(goal.getPathCost()[1]);
+        ret.append(";");
+
+        // Expanded Nodes
+        ret.append(expandedNodes);
+
+        return ret.toString();
     }
 }

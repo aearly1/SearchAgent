@@ -7,7 +7,7 @@ import java.util.*;
 public class Search {
 
 
-    public static Node searchProcedure(SearchProblem problem, String strategy) throws IOException, ClassNotFoundException {
+    public static Object[] searchProcedure(SearchProblem problem, String strategy) throws IOException, ClassNotFoundException {
 
         if (problem instanceof Matrix) {
             Matrix mProblem = (Matrix) problem;
@@ -25,7 +25,7 @@ public class Search {
                 case "DF":
                     return DFS(mProblem, root);
                 case "ID":
-                    return IDS(mProblem, root);
+                    return IDS(mProblem, root, 1000);
                 case "UC":
                     return UCS(mProblem, root);
                 case "GR1":
@@ -289,10 +289,14 @@ public class Search {
             //current action
             for (MatrixOperator action : actions) {
                 MatrixState result = problem.result(head.getState(), action); //state resulting from action
+                int[] stepCost = problem.stepCost(head.getState(), action, result);
+                int[] pathCost = head.getPathCost();
+                pathCost[0] += stepCost[0];
+                pathCost[1] += stepCost[1];
 
                 // if state is not repeated and is not maximum depth
                 if (!visitedStates.contains(result)) {
-                    Node<MatrixState, MatrixOperator> child = new Node<>(result, head, action, new int[]{0, 0},
+                    Node<MatrixState, MatrixOperator> child = new Node<>(result, head, action, pathCost,
                             0, head.getDepth() + 1);
                     S.add(child); //added to stack
                     visitedStates.add(result); // state marked as visited to avoid adding it to queue again
@@ -301,9 +305,5 @@ public class Search {
         }
 
         return new Object[]{null, expandedNodes};
-    }
-
-    public static void main(String[] args) {
-        System.out.print("lol");
     }
 }
