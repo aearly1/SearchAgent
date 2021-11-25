@@ -28,6 +28,13 @@ public class Neo implements Serializable {
         _originalCapacity = currentCapacity;
     }
 
+    public Neo(Location location, int damage, int currentCapacity, int originalCapacity){
+        _location = location;
+        _damage = damage;
+        _currentCapacity = currentCapacity;
+        _originalCapacity = originalCapacity;
+    }
+
     // ==========================Getters-and-Setters==========================
 
     public Location getLocation() {

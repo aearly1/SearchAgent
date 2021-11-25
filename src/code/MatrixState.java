@@ -1,7 +1,8 @@
 package code;
 
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -144,15 +145,44 @@ public class MatrixState implements Serializable {
      * @throws ClassNotFoundException
      */
 
-    public MatrixState copy() throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(outputStream);
-        out.writeObject(this);
+//    public MatrixState copy() throws IOException, ClassNotFoundException {
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        ObjectOutputStream out = new ObjectOutputStream(outputStream);
+//        out.writeObject(this);
+//
+//        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+//        ObjectInputStream in = new ObjectInputStream(inputStream);
+//        MatrixState copied = (MatrixState) in.readObject();
+//        return copied;
+//    }
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        MatrixState copied = (MatrixState) in.readObject();
-        return copied;
+    public MatrixState copy() {
+        Location grid = new Location(this.getGridDims().getX(), this.getGridDims().getY());
+        Location neoLoc = new Location(this.getNeo().getLocation().getX(), this.getNeo().getLocation().getY());
+        Neo neo = new Neo(neoLoc, this.getNeo().getDamage(),
+                this.getNeo().getCurrentCapacity(), this.getNeo().getOriginalCapacity());
+
+        ArrayList<Hostage> hostages = new ArrayList<>();
+        for (Hostage h : this.getHostages()) {
+            Location newHLoc = new Location(h.getLocation().getX(), h.getLocation().getY());
+            Hostage newH = new Hostage(newHLoc, h.getDamage(), h.isCarried());
+            hostages.add(newH);
+        }
+
+        ArrayList<Location> agents = new ArrayList<>();
+        for (Location a : this.getAgentLocs()) {
+            Location newALoc = new Location(a.getX(), a.getY());
+            agents.add(newALoc);
+        }
+
+        ArrayList<Location> pills = new ArrayList<>();
+        for (Location p : this.getPillLocs()) {
+            Location newPLoc = new Location(p.getX(), p.getY());
+            pills.add(newPLoc);
+        }
+
+        return new MatrixState(grid, neo, hostages, agents, this.getPadLocs(),
+                pills, this.getTeleBoothLoc());
     }
 
     //====================
