@@ -416,7 +416,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
         for (Hostage hostage : s.getHostages()) {
             Location hostageLoc = hostage.getLocation(); //get location of hostage
-            if (!hostageLoc.equals(telephoneBooth))//check is a hostage is at the booth
+            if (!(hostageLoc.equals(telephoneBooth)&& !hostage.isCarried()))//check is a hostage is at the booth
             {
                 hostagesAtBooth = false;
                 break; //there exists a hostage that hasn't been saved
