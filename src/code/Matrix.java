@@ -326,11 +326,13 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 for (int i = pillLocs.size() - 1; i >= 0; i--) {
                     Location l = pillLocs.get(i);
                     if (l.equals(res.getNeo().getLocation())) {
-                        res.getNeo().setDamage(res.getNeo().getDamage() - 20);//should not be below zero
+                    	int newDamageN= res.getNeo().getDamage() - 20 <0?0:res.getNeo().getDamage() - 20;
+                        res.getNeo().setDamage(newDamageN);//should not be below zero
 
                         for (Hostage h : host_loc) {
                             if (!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive()) {
-                                h.setDamage(h.getDamage() - 22);
+                            	int newDamageH= h.getDamage() - 20 <0?0:h.getDamage() - 20;
+                                h.setDamage(newDamageH-2);
 
                             }
                         }
