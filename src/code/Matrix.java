@@ -439,9 +439,19 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 }
             }
         }
+        int killedHostages=0;
+        if(a==MatrixOperator.KILL)
+        {
+        	for (Hostage h : s1.getHostages()) {
+                if (s1.getNeo().getLocation().adjacent(h.getLocation()) && !h.isAlive() && !h.getLocation().equals(s1.getTeleBoothLoc()))// check if the damage will become 100 in the new state
+                {
+                    killedHostages++; // increment the number of killed hostages
+                }
+            }
+        }
         int s1AgentsCount = s1.getAgentLocs().size(); //get number of ALIVE agents in old state(s1)
         int s2AgentsCount = s2.getAgentLocs().size(); //get number of ALIVE agents in new state(s2)
-        cost[1] = s1AgentsCount - s2AgentsCount; // number of agents killed as result of doing action a
+        cost[1] = s1AgentsCount - s2AgentsCount + killedHostages; // number of agents killed as result of doing action a
         return cost;
     }
 
