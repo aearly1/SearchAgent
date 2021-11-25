@@ -65,9 +65,9 @@ public class Search {
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
-                    int[] cost = new int[2];
-                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    int[] cost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
+                    cost[0]+= problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1]+= problem.stepCost(head.getState(), a, possibleState)[1];
                     Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth() + 1);
                     Q.add(newNode);
                     visitedStates.add(possibleState);
@@ -99,9 +99,9 @@ public class Search {
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
-                    int[] cost = new int[2];
-                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    int[] cost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
+                    cost[0]+= problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1]+= problem.stepCost(head.getState(), a, possibleState)[1];
                     Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, 0, head.getDepth() + 1);
                     S.push(newNode);
                     visitedStates.add(possibleState);
@@ -193,9 +193,10 @@ public class Search {
             	MatrixState new_state=problem.result(head.getState(), x);
             	if(!visitedStates.contains(new_state))
             	{
-                	int[]cost = new int[2];
-                	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
-                	cost[1] = problem.stepCost(head.getState(), x, new_state)[1]+head.getPathCost()[1];
+                	int[]cost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
+                    cost[0]+= problem.stepCost(head.getState(), x, new_state)[0];
+                    cost[1]+= problem.stepCost(head.getState(), x, new_state)[1];
+
                 	int hur_value=0;
                 	
                 	if(heuristicNum == 1)
@@ -239,9 +240,9 @@ public class Search {
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
-                    int[] cost = new int[2];
-                    cost[0] = head.getPathCost()[0] + problem.stepCost(head.getState(), a, possibleState)[0];
-                    cost[1] = head.getPathCost()[1] + problem.stepCost(head.getState(), a, possibleState)[1];
+                    int[] cost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
+                    cost[0]+= problem.stepCost(head.getState(), a, possibleState)[0];
+                    cost[1]+= problem.stepCost(head.getState(), a, possibleState)[1];
                     int heuristic = 0;
                     if (heuristicNum == 1) {
                         heuristic = problem.ASHeuristic1(possibleState);
