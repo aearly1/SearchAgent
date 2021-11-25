@@ -397,7 +397,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         // all alive hostages that are not at the TB
         for (Hostage h : res.getHostages())//Hostage damage +2 after action
         {
-            if (!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive()) {
+            if (!h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive() || (h.getLocation().equals(res.getTeleBoothLoc()) && h.isAlive() && h.isCarried())) {
                 h.setDamage(h.getDamage() + 2);
             }
 
