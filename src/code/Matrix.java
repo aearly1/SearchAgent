@@ -206,19 +206,16 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
 
             }
 
-            if (h.getDamage() >= 100 && !h.isCarried() && h.getLocation().adjacent(neo_loc) && !h.getLocation().equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.KILL) && s.getNeo().getDamage()<80) {
+            if (h.getDamage() >= 100 && !h.isCarried() && h.getLocation().adjacent(neo_loc) && !h.getLocation().equals(s.getTeleBoothLoc()) && !operators.contains(MatrixOperator.KILL)) {
                 operators.add(MatrixOperator.KILL);
             }
         }
 
         //=================kill all agents in neighbouring cells===============
-        if(s.getNeo().getDamage()<80)
-        {
-        	for (Location l : agents) {
-        		if (neo_loc.adjacent(l) && !operators.contains(MatrixOperator.KILL)) {
-        			operators.add(MatrixOperator.KILL);
-        			break;
-        		}
+        for (Location l : agents) {
+        	if (neo_loc.adjacent(l) && !operators.contains(MatrixOperator.KILL)) {
+        		operators.add(MatrixOperator.KILL);
+        		break;
         	}
         }
         //================ take a pill=======================================
