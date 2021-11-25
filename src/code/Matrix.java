@@ -436,7 +436,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         if (a != (MatrixOperator.TAKE_PILL))//check if the agent didn't take pill (if he did no hostage will die)
         {
             for (Hostage h : s1.getHostages()) {
-                if (h.getDamage() == 98 || h.getDamage() == 99)// check if the damage will become 100 in the new state
+                if (h.getDamage() => 98)// check if the damage will become 100 in the new state
                 {
                     cost[0]++; // increment the number of killed hostages
                 }
@@ -446,7 +446,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         if(a==MatrixOperator.KILL)
         {
         	for (Hostage h : s1.getHostages()) {
-                if (s1.getNeo().getLocation().adjacent(h.getLocation()) && !h.isAlive() && (!h.getLocation().equals(s1.getTeleBoothLoc())|| (h.getLocation().equals(s1.getTeleBoothLoc())&&h.isCarried())))// check if the damage will become 100 in the new state
+                if (s1.getNeo().getLocation().adjacent(h.getLocation()) && !h.isAlive() && (!h.getLocation().equals(s1.getTeleBoothLoc())))// check if the damage will become 100 in the new state
                 {
                     killedHostages++; // increment the number of killed hostages
                 }
@@ -461,7 +461,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     /**
      * The first A* heuristic assigns a cost value that corresponds
      * to the total number of unsaved (and ALIVE) hostages since
-     * you will need at least one action to save each hostage.
+     * you will need at leaost ne action to save each hostage.
      * Thus, this is guaranteed to be admissable.
      */
     public int ASHeuristic1(MatrixState s) {
