@@ -205,7 +205,7 @@ public class Search {
                 	}
                 	else
                 	{
-                		hur_value = problem.ASHeuristic1(new_state);
+                		hur_value = problem.GreedyHeuristic3(new_state);
                 	}
                 	
                 	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
