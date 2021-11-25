@@ -165,7 +165,7 @@ public class Search {
 
     public static Object[]
     GR(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws ClassNotFoundException, IOException {
-//    	HashSet<Node<MatrixState,MatrixOperator>> expanded_nodes=new HashSet<Node<MatrixState,MatrixOperator>>();
+
         HashSet<MatrixState> expanded_nodes = new HashSet<MatrixState>();
         int expandedNodes = 0;
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
@@ -201,33 +201,11 @@ public class Search {
             		Q.add(result_node);
             		expanded_nodes.add(new_state);
             	}
-//            	MatrixState new_state=problem.result(head.getState(), x);
-//            	int[]cost = new int[2];
-//            	cost[0] = problem.stepCost(head.getState(), x, new_state)[0]+head.getPathCost()[0];
-//            	cost[1] = problem.stepCost(head.getState(), x, new_state)[1]+head.getPathCost()[1];
-//            	float hur_value=0;
-//            	
-//            	if(heuristicNum == 1)
-//            	{
-//            		hur_value = problem.GreedHeuristic1(new_state);
-//            	}
-//            	else
-//            	{
-//            		hur_value = problem.GreedHeuristic2(new_state);
-//            	}
-//            	
-//            	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
-//            	result_node.setgreedy(true);
-//            	if(!expanded_nodes.contains(result_node))
-//            	{
-//            		Q.add(result_node);
-//            		expanded_nodes.add(head);
-//            	}
-//            	
+
             }
         }
 
-        return null;
+        return new Object[]{null,expandedNodes};
     }
 
     public static Node<MatrixState, MatrixOperator>
