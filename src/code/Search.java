@@ -201,11 +201,11 @@ public class Search {
                 	
                 	if(heuristicNum == 1)
                 	{
-                		hur_value = problem.GreedHeuristic1(new_state);
+                		hur_value = problem.ASHeuristic1(new_state);
                 	}
                 	else
                 	{
-                		hur_value = problem.GreedHeuristic2(new_state);
+                		hur_value = problem.ASHeuristic2(new_state);
                 	}
                 	
                 	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
