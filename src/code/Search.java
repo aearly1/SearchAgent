@@ -163,17 +163,19 @@ public class Search {
         return new Object[]{null, expandedNodes};
     }
 
-    public static Node<MatrixState, MatrixOperator>
+    public static Object[]
     GR(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws ClassNotFoundException, IOException {
 //    	HashSet<Node<MatrixState,MatrixOperator>> expanded_nodes=new HashSet<Node<MatrixState,MatrixOperator>>();
         HashSet<MatrixState> expanded_nodes = new HashSet<MatrixState>();
+        int expandedNodes = 0;
         PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
         root.setgreedy(true);
         Q.add(root);
 
         while (!Q.isEmpty()) {
+        	expandedNodes++;
             Node<MatrixState, MatrixOperator> head = Q.poll();
-            if (problem.isGoal(head.getState())) return head;
+            if (problem.isGoal(head.getState())) return new Object[]{head,expandedNodes};
             ArrayList <MatrixOperator> possible_actions = problem.actions(head.getState());
             for (MatrixOperator x : possible_actions)
             {

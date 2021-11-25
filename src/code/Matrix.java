@@ -503,10 +503,18 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     }
     private  int gh2helper(ArrayList<Hostage> hostages,Location neo_loc,Location TB)
     {
+    	if(hostages.size()==0)
+    	{
+    		Location last=hostages.get(0).getLocation();
+    		int manhatten=Math.abs(neo_loc.getX()-TB.getX())+Math.abs(neo_loc.getY()-TB.getY());
+    		
+    		return manhatten;
+    	}
+    	
     	if(hostages.size()==1)
     	{
     		Location last=hostages.get(0).getLocation();
-    		int manhatten=Math.abs(neo_loc.getX()-last.getX())+(neo_loc.getY()-last.getY())  +  Math.abs(last.getX()-TB.getX())+(last.getY()-TB.getY());
+    		int manhatten=Math.abs(neo_loc.getX()-last.getX())+Math.abs(neo_loc.getY()-last.getY())  +  Math.abs(last.getX()-TB.getX())+Math.abs(last.getY()-TB.getY());
     		
     		return manhatten;
     	}

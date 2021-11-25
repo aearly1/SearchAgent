@@ -153,8 +153,8 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
 
     // ==========================String-Format==========================
 
-    @Override
-    public String toString() {
-        StringBuilder
-    }
+//    @Override
+//    public String toString() {
+//        StringBuilder
+//    }
 }
