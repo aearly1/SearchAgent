@@ -184,7 +184,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         {
         	operators.add(MatrixOperator.RIGHT);
         }
-        if(neo_loc.getX()>1 && !agents.contains(new Location(neo_loc.getX()-1,neo_loc.getY()))  && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.LEFT))
+        if(neo_loc.getX()>0 && !agents.contains(new Location(neo_loc.getX()-1,neo_loc.getY()))  && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.LEFT))
         {
         	operators.add(MatrixOperator.LEFT);
         }
@@ -192,7 +192,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         {
         	operators.add(MatrixOperator.UP);
         }
-        if(neo_loc.getY()>1 && !agents.contains(new Location(neo_loc.getX(),neo_loc.getY()-1))  && !Helpers.hostage98(neo_loc, hostages , MatrixOperator.DOWN))
+        if(neo_loc.getY()>0 && !agents.contains(new Location(neo_loc.getX(),neo_loc.getY()-1))  && !Helpers.hostage98(neo_loc, hostages , MatrixOperator.DOWN))
         {
         	operators.add(MatrixOperator.DOWN);
         }
@@ -505,7 +505,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     {
     	if(hostages.size()==0)
     	{
-    		Location last=hostages.get(0).getLocation();
+//    		Location last=hostages.get(0).getLocation();
     		int manhatten=Math.abs(neo_loc.getX()-TB.getX())+Math.abs(neo_loc.getY()-TB.getY());
     		
     		return manhatten;
