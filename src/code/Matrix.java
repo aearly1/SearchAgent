@@ -170,6 +170,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         ArrayList<MatrixOperator> operators = new ArrayList<>();
 
         //TODO: Moataz
+        if(s.getNeo().getDamage()>=100)return operators;
         Location neo_loc = s.getNeo().getLocation();
         Location dims = s.getGridDims();   //////////////// dims should be the location of the last cell in the grid (top right cell)
         ArrayList<Location> agents = s.getAgentLocs();  /// locations of the remaining agents in the matrix
