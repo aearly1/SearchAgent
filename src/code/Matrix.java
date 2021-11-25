@@ -321,7 +321,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 // what will happen
                 // my health AND the Health of all alive hostages will increment
                 // remove the pill from the world
-                ArrayList<Location> pillLocs = res.getAgentLocs();
+                ArrayList<Location> pillLocs = res.getPillLocs();
                 for (int i = pillLocs.size() - 1; i >= 0; i--) {
                     Location l = pillLocs.get(i);
                     if (l.equals(res.getNeo().getLocation())) {
