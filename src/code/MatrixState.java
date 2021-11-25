@@ -208,7 +208,27 @@ public class MatrixState implements Serializable {
         _padLocs.put(src, dest);
     }
 
-    // ================================Hashing=================================
+    // ================================Equality-and-Hashing=================================
+
+
+    @Override
+    public boolean equals(Object obj) {
+        MatrixState m = (MatrixState) obj;
+
+        if (!this.getGridDims().equals(m.getGridDims())) return false;
+
+        if (!this.getNeo().equals(m.getNeo())) return false;
+
+        if (!this.getHostages().equals(m.getHostages())) return false;
+
+        if (!this.getAgentLocs().equals(m.getAgentLocs())) return false;
+
+        if (!this.getPadLocs().equals(m.getPadLocs())) return false;
+
+        if (!this.getPillLocs().equals(m.getPillLocs())) return false;
+
+        return this.getTeleBoothLoc().equals(m.getTeleBoothLoc());
+    }
 
     /**
      * Array would hash to the same code only if their order is the same.

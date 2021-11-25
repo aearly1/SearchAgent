@@ -45,7 +45,7 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
         _state = null;
         _parent = null;
         _action = null;
-        _pathCost = null;
+        _pathCost = new int[]{0, 0};
         _heuristic = 0;
         _depth = 0;
     }

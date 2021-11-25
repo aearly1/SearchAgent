@@ -67,9 +67,12 @@ public class Helpers {
         String[] hostageStr = segments[7].split(",");
         ArrayList<Hostage> hostages = new ArrayList<>();
 
+        int hostageId = 0;
         for (int i = 0; i < hostageStr.length - 2; i += 3) {
             Location hostageLoc = new Location(Integer.parseInt(hostageStr[i]), Integer.parseInt(hostageStr[i + 1]));
             Hostage hostage = new Hostage(hostageLoc, Integer.parseInt(hostageStr[i + 2]), false);
+            hostage.setId(hostageId++);
+
             hostages.add(hostage);
         }
 
@@ -86,16 +89,16 @@ public class Helpers {
         Location temp;
         switch (operator) {
             case UP:
-                temp = new Location(neo.getX(), neo.getY() + 1);
-                break;
-            case DOWN:
-                temp = new Location(neo.getX(), neo.getY() - 1);
-                break;
-            case LEFT:
                 temp = new Location(neo.getX() - 1, neo.getY());
                 break;
-            case RIGHT:
+            case DOWN:
                 temp = new Location(neo.getX() + 1, neo.getY());
+                break;
+            case LEFT:
+                temp = new Location(neo.getX(), neo.getY() - 1);
+                break;
+            case RIGHT:
+                temp = new Location(neo.getX(), neo.getY() + 1);
                 break;
             default:
                 temp = null;
@@ -129,7 +132,7 @@ public class Helpers {
 
         // Add actions in reverse
         while (head != null && head.getParent() != null) {
-            switch (goal.getAction()) {
+            switch (head.getAction()) {
                 case UP:
                     ret.append("pu,");
                     break;
@@ -160,6 +163,8 @@ public class Helpers {
                 default:
                     break;
             }
+
+            head = head.getParent();
         }
 
         // Remove last comma

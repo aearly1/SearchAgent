@@ -155,9 +155,10 @@ public class Search {
             for (MatrixOperator action : actions) {
                 MatrixState result = problem.result(head.getState(), action); //state resulting from action
                 int[] stepCost = problem.stepCost(head.getState(), action, result);
-                int[] pathCost = head.getPathCost();
+                int[] pathCost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
                 pathCost[0] += stepCost[0];
                 pathCost[1] += stepCost[1];
+                System.out.println(pathCost[1]);
 
                 // if state is not repeated
                 if (!visitedStates.contains(result)) {
@@ -285,7 +286,7 @@ public class Search {
             for (MatrixOperator action : actions) {
                 MatrixState result = problem.result(head.getState(), action); //state resulting from action
                 int[] stepCost = problem.stepCost(head.getState(), action, result);
-                int[] pathCost = head.getPathCost();
+                int[] pathCost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
                 pathCost[0] += stepCost[0];
                 pathCost[1] += stepCost[1];
 

@@ -1,12 +1,13 @@
 package code;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Helper class which contains all the attributes needed for Neo (player/agent).
  */
 
-public class Neo {
+public class Neo implements Serializable {
 
     /**
      * We need to track Neo's location on the grid, Neo's health, and how many hostages neo can currently carry
@@ -83,6 +84,20 @@ public class Neo {
     }
 
     // ================================Hashing=================================
+
+
+    @Override
+    public boolean equals(Object obj) {
+        Neo n = (Neo) obj;
+
+        if (!this.getLocation().equals(n.getLocation())) return false;
+
+        if (this.getDamage() != n.getDamage()) return false;
+
+        if (this.getCurrentCapacity() != n.getCurrentCapacity()) return false;
+
+        return this.getOriginalCapacity() == n.getOriginalCapacity();
+    }
 
     @Override
     public int hashCode() {

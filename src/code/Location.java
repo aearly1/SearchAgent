@@ -1,5 +1,6 @@
 package code;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Objects;
  * starting from the bottom left of the grid (0, 0). position cannot be negative.
  */
 
-public class Location {
+public class Location implements Serializable {
 
     /**
      * _x: horizontal position
@@ -57,7 +58,9 @@ public class Location {
     }
 
     // ==========================Equality-and-Hashing==========================
-    public boolean equals(Location l) {
+    @Override
+    public boolean equals(Object obj) {
+        Location l = (Location) obj;
         return (_x == l.getX()) && (_y == l.getY());
     }
 
