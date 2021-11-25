@@ -104,7 +104,7 @@ public class Helpers {
                 temp = null;
         }
         for (Hostage h : hostages) {
-            if (h.getLocation().equals(temp) && h.getDamage() == 98) {
+            if (h.getLocation().equals(temp) && h.getDamage() >= 98) {
                 return true;
             }
         }
@@ -126,12 +126,13 @@ public class Helpers {
      * – nodes is the number of nodes chosen for expansion during the search.
      */
     public static String solutionStr(Node<MatrixState, MatrixOperator> goal, int expandedNodes) {
+        if(goal == null) return "No Solution";
         StringBuilder ret = new StringBuilder();
 
         Node<MatrixState, MatrixOperator> head = goal;
 
         // Add actions in reverse
-        while (head != null && head.getParent() != null) {
+        while (head.getParent() != null) {
             switch (head.getAction()) {
                 case UP:
                     ret.append("pu,");
@@ -175,11 +176,11 @@ public class Helpers {
         ret.append(";");
 
         // Deaths
-        if (goal != null) ret.append(goal.getPathCost()[0]);
+        ret.append(goal.getPathCost()[0]);
         ret.append(";");
 
         // Kills
-        if (goal != null) ret.append(goal.getPathCost()[1]);
+        ret.append(goal.getPathCost()[1]);
         ret.append(";");
 
         // Expanded Nodes
