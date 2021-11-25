@@ -593,7 +593,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         return cost;
     }
     
-    public int GreedyHeuristic3(MatricState s)
+    public int GreedyHeuristic3(MatrixState s)
     {
     	int cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
