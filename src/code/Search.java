@@ -197,15 +197,15 @@ public class Search {
                     cost[0]+= problem.stepCost(head.getState(), x, new_state)[0];
                     cost[1]+= problem.stepCost(head.getState(), x, new_state)[1];
 
-                	int hur_value=0;
+                	float hur_value=0;
                 	
                 	if(heuristicNum == 1)
                 	{
-                		hur_value = problem.GreedHeuristic1(new_state);
+                		hur_value = problem.ASHeuristic2(new_state);
                 	}
                 	else
                 	{
-                		hur_value = problem.GreedHeuristic2(new_state);
+                		hur_value = problem.GreedyHeuristic3(new_state);
                 	}
                 	
                 	Node<MatrixState,MatrixOperator> result_node = new Node<MatrixState,MatrixOperator>(new_state,head,x,cost,hur_value,head.getDepth()+1);
