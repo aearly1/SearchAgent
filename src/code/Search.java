@@ -245,9 +245,9 @@ public class Search {
                     cost[1]+= problem.stepCost(head.getState(), a, possibleState)[1];
                     float heuristic = 0;
                     if (heuristicNum == 1) {
-                        heuristic = problem.ASHeuristic1(possibleState);
+                        heuristic = problem.ASHeuristicTest1(possibleState);
                     } else if (heuristicNum == 2) {
-                        heuristic = problem.ASHeuristic2(possibleState);
+                        heuristic = problem.ASHeuristicTest2(possibleState);
                     }
                     Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, heuristic, head.getDepth() + 1);
                     Q.add(newNode);
