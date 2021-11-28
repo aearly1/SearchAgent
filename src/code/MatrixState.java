@@ -273,7 +273,7 @@ public class MatrixState implements Serializable {
     @Override
     public String toString() {
         StringBuilder grid = new StringBuilder();
-        String[][] info = new String[this.getGridDims().getX() + 1][this.getGridDims().getY() + 1];
+        String[][] info = new String[this.getGridDims().getX()][this.getGridDims().getY()];
         for(String[] row : info) Arrays.fill(row, "");
 
         Location neoLoc = this.getNeo().getLocation();
