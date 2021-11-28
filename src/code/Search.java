@@ -197,7 +197,7 @@ public class Search {
                     cost[0]+= problem.stepCost(head.getState(), x, new_state)[0];
                     cost[1]+= problem.stepCost(head.getState(), x, new_state)[1];
 
-                	int hur_value=0;
+                	float hur_value=0;
                 	
                 	if(heuristicNum == 1)
                 	{
@@ -243,7 +243,7 @@ public class Search {
                     int[] cost = new int[]{head.getPathCost()[0], head.getPathCost()[1]};
                     cost[0]+= problem.stepCost(head.getState(), a, possibleState)[0];
                     cost[1]+= problem.stepCost(head.getState(), a, possibleState)[1];
-                    int heuristic = 0;
+                    float heuristic = 0;
                     if (heuristicNum == 1) {
                         heuristic = problem.ASHeuristic1(possibleState);
                     } else if (heuristicNum == 2) {
