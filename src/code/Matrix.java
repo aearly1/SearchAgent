@@ -465,12 +465,12 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * you will need at leaost ne action to save each hostage.
      * Thus, this is guaranteed to be admissable.
      */
-    public int ASHeuristic1(MatrixState s) {
-    	int cost = 0;
+    public float ASHeuristic1(MatrixState s) {
+    	float cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
-        int minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
+        float minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
         for (Hostage h : hostages) {
             if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
             {
@@ -481,7 +481,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-        minKillOp = minKillOp / 4; //since at best you will kill 4 agents at once (one at each adjacent cell)
+        minKillOp = minKillOp / (float) 4.0; //since at best you will kill 4 agents at once (one at each adjacent cell)
         cost = nCarryOp + minKillOp;
         return cost;
     }
