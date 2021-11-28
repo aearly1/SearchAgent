@@ -158,10 +158,8 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         //output string
         String ret = Helpers.solutionStr(goalNode, expandedNodes);
 
-        if (visualize) {
-            //TODO: Ahmed | visualize solution steps
-        }
-
+        // Visualize output
+        if (visualize) System.out.println(Helpers.visualize(goalNode));
         return ret;
     }
 

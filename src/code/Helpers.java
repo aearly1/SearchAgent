@@ -133,38 +133,38 @@ public class Helpers {
 
         // Add actions in reverse
         while (head.getParent() != null) {
-//            switch (head.getAction()) {
-//                case UP:
-//                    ret.append("pu,");
-//                    break;
-//                case DOWN:
-//                    ret.append("nwod,");
-//                    break;
-//                case LEFT:
-//                    ret.append("tfel,");
-//                    break;
-//                case RIGHT:
-//                    ret.append("thgir,");
-//                    break;
-//                case CARRY:
-//                    ret.append("yrrac,");
-//                    break;
-//                case DROP:
-//                    ret.append("pord,");
-//                    break;
-//                case TAKE_PILL:
-//                    ret.append("lliPekat,");
-//                    break;
-//                case KILL:
-//                    ret.append("llik,");
-//                    break;
-//                case FLY:
-//                    ret.append("ylf,");
-//                    break;
-//                default:
-//                    break;
-//            }
-            ret.append(head.getHeuristic()).append(",");
+            switch (head.getAction()) {
+                case UP:
+                    ret.append("pu,");
+                    break;
+                case DOWN:
+                    ret.append("nwod,");
+                    break;
+                case LEFT:
+                    ret.append("tfel,");
+                    break;
+                case RIGHT:
+                    ret.append("thgir,");
+                    break;
+                case CARRY:
+                    ret.append("yrrac,");
+                    break;
+                case DROP:
+                    ret.append("pord,");
+                    break;
+                case TAKE_PILL:
+                    ret.append("lliPekat,");
+                    break;
+                case KILL:
+                    ret.append("llik,");
+                    break;
+                case FLY:
+                    ret.append("ylf,");
+                    break;
+                default:
+                    break;
+            }
+//            ret.append(head.getHeuristic()).append(",");
 
 
             head = head.getParent();
@@ -189,5 +189,20 @@ public class Helpers {
         ret.append(expandedNodes);
 
         return ret.toString();
+    }
+
+    public static StringBuilder visualize(Node<MatrixState, MatrixOperator> head){
+        if (head == null) return new StringBuilder();
+
+        StringBuilder ret = new StringBuilder(visualize(head.getParent()));
+
+        ret.append("========================NODE-AT-DEPTH-" + head.getDepth() + "========================\n");
+        ret.append("ACTION: ").append(head.getAction() == null? "NOP": head.getAction().name())
+                .append(", ").append("PATH COST: [").append(head.getPathCost()[0])
+                .append(", ").append(head.getPathCost()[1]).append("], ")
+                .append("HEURISTIC: ").append(head.getHeuristic()).append("\n\n")
+                .append(head.getState()).append("\n");
+
+        return ret;
     }
 }

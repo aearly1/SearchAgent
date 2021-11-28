@@ -4,6 +4,7 @@ package code;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -267,5 +268,98 @@ public class MatrixState implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(_gridDims, _neo, _hostages, _agentLocs, _padLocs, _pillLocs, _teleBoothLoc);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder grid = new StringBuilder();
+        String[][] info = new String[this.getGridDims().getX() + 1][this.getGridDims().getY() + 1];
+        for(String[] row : info) Arrays.fill(row, "");
+
+        Location neoLoc = this.getNeo().getLocation();
+
+        info[neoLoc.getX()][neoLoc.getY()] += "N(" + this.getNeo().getDamage() +
+                ","+ this.getNeo().getCurrentCapacity() + ");";
+
+        int maxlen = info[neoLoc.getX()][neoLoc.getY()].length();
+
+        for(Hostage h : this.getHostages()){
+            info[h.getLocation().getX()][h.getLocation().getY()] +=
+                    "H(" + h.getDamage() + (h.isCarried()? ", CARRIED);":");");
+
+            maxlen = Math.max(maxlen, info[h.getLocation().getX()][h.getLocation().getY()].length());
+        }
+
+        for(Location a : this.getAgentLocs()){
+            info[a.getX()][a.getY()] += "A;";
+            maxlen = Math.max(maxlen, info[a.getX()][a.getY()].length());
+        }
+
+        for(Location p : this.getPillLocs()){
+            info[p.getX()][p.getY()] += "P;";
+            maxlen = Math.max(maxlen, info[p.getX()][p.getY()].length());
+        }
+
+        for(Location p : this.getPadLocs().keySet()){
+            Location dest = this.getPadLocs().get(p);
+            info[p.getX()][p.getY()] += "P(" + dest.getX() + "," + dest.getY() + ");";
+            maxlen = Math.max(maxlen, info[p.getX()][p.getY()].length());
+        }
+
+        info[this.getTeleBoothLoc().getX()][this.getTeleBoothLoc().getY()] += "TB;";
+        maxlen = Math.max(maxlen, info[this.getTeleBoothLoc().getX()][this.getTeleBoothLoc().getY()].length());
+
+        // Column numbers
+        grid.append("    |");
+        for (int i = 0; i < info[0].length; i++){
+            for (int k = 0; k < maxlen/2 + (maxlen % 2) ; k++) {
+                grid.append(" ");
+            }
+
+            grid.append(i);
+
+            for (int k = 0; k < maxlen/2 - 1; k++) {
+                grid.append(" ");
+            }
+            grid.append("|");
+        }
+        grid.append("\n");
+
+        // Row numbers + rows
+        for (int i = 0; i < info.length; i++){
+
+            // Append separator
+            grid.append("----+");
+            for (int j = 0; j < info[0].length; j++){
+                for (int k = 0; k < maxlen; k++) {
+                    grid.append("-");
+                }
+                grid.append("+");
+            }
+            grid.append("\n");
+
+            // Append row number
+            grid.append("  " + (i) + " |");
+
+
+            for (int j = 0; j < info[0].length; j++){
+                    int spaces = (maxlen - info[i][j].length()) / 2;
+
+                    for (int k = 0; k < spaces; k++){
+                        grid.append(" ");
+                    }
+
+                    grid.append(info[i][j]);
+
+                    for (int k = 0; k < (maxlen - info[i][j].length()) - spaces; k++){
+                        grid.append(" ");
+                    }
+
+                grid.append("|");
+            }
+            grid.append("\n");
+        }
+        
+        return grid.toString();
     }
 }

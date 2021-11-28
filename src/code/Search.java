@@ -249,7 +249,7 @@ public class Search {
                     } else if (heuristicNum == 2) {
                         heuristic = problem.ASHeuristic2(possibleState);
                     }
-                    Node<MatrixState, MatrixOperator> newNode = new Node<MatrixState, MatrixOperator>(possibleState, head, a, cost, heuristic, head.getDepth() + 1);
+                    Node<MatrixState, MatrixOperator> newNode = new Node<>(possibleState, head, a, cost, heuristic, head.getDepth() + 1);
                     Q.add(newNode);
                     visitedStates.add(possibleState);
                 }
