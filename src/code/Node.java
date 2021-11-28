@@ -22,11 +22,11 @@ public class Node<State, Operator> implements Comparable<Node<State, Operator>> 
     private Node _parent;
     private Operator _action;
     private int[] _pathCost;
-    private int _heuristic;
+    private float _heuristic;
     private int _depth;
     private boolean _isgreedy;
 
-    public Node(State state, Node parent, Operator action, int[] pathCost, int heuristic, int depth) {
+    public Node(State state, Node parent, Operator action, int[] pathCost, float heuristic, int depth) {
         _state = state;
         _parent = parent;
         _action = action;
