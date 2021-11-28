@@ -17,11 +17,13 @@ public class Main {
         String grid9 = "5,5;2;0,4;1,4;0,1,1,1,2,1,3,1,3,3,3,4;1,0,2,4;0,3,4,3,4,3,0,3;0,0,30,3,0,80,4,4,80";
         String[] strats = new String[]{"BF", "DF", "ID", "UC", "GR1", "GR2", "AS1", "AS2"};
 
-        String grid = grid3;
-        int mindx1 = 3;
-        int mindx2 = 6;
-        System.out.println(Matrix.solve(grid, strats[mindx1], true));
-        System.out.println();
-        System.out.println(Matrix.solve(grid, strats[mindx2], true));
+        String grid = grid9;
+
+        for (int i = 0; i < strats.length; i++) {
+            System.out.println(strats[i] + ":");
+            System.out.println(Matrix.solve(grid, strats[i], true));
+            System.out.println();
+        }
+
     }
 }

@@ -133,37 +133,39 @@ public class Helpers {
 
         // Add actions in reverse
         while (head.getParent() != null) {
-            switch (head.getAction()) {
-                case UP:
-                    ret.append("pu,");
-                    break;
-                case DOWN:
-                    ret.append("nwod,");
-                    break;
-                case LEFT:
-                    ret.append("tfel,");
-                    break;
-                case RIGHT:
-                    ret.append("thgir,");
-                    break;
-                case CARRY:
-                    ret.append("yrrac,");
-                    break;
-                case DROP:
-                    ret.append("pord,");
-                    break;
-                case TAKE_PILL:
-                    ret.append("lliPekat,");
-                    break;
-                case KILL:
-                    ret.append("llik,");
-                    break;
-                case FLY:
-                    ret.append("ylf,");
-                    break;
-                default:
-                    break;
-            }
+//            switch (head.getAction()) {
+//                case UP:
+//                    ret.append("pu,");
+//                    break;
+//                case DOWN:
+//                    ret.append("nwod,");
+//                    break;
+//                case LEFT:
+//                    ret.append("tfel,");
+//                    break;
+//                case RIGHT:
+//                    ret.append("thgir,");
+//                    break;
+//                case CARRY:
+//                    ret.append("yrrac,");
+//                    break;
+//                case DROP:
+//                    ret.append("pord,");
+//                    break;
+//                case TAKE_PILL:
+//                    ret.append("lliPekat,");
+//                    break;
+//                case KILL:
+//                    ret.append("llik,");
+//                    break;
+//                case FLY:
+//                    ret.append("ylf,");
+//                    break;
+//                default:
+//                    break;
+//            }
+            ret.append(head.getHeuristic()).append(",");
+
 
             head = head.getParent();
         }

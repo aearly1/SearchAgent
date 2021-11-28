@@ -132,7 +132,7 @@ public class Search {
     }
 
     public static Object[] UCS(Matrix problem, Node<MatrixState, MatrixOperator> root) throws IOException, ClassNotFoundException {
-        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>();
         HashSet<MatrixState> visitedStates = new HashSet<>();
         int expandedNodes = 0;
 
@@ -178,7 +178,7 @@ public class Search {
 
         HashSet<MatrixState> visitedStates = new HashSet<MatrixState>();
         int expandedNodes = 0;
-        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>();
         root.setgreedy(true);
         Q.add(root);
         visitedStates.add(root.getState());
@@ -222,7 +222,7 @@ public class Search {
 
     public static Object[] AS(Matrix problem, Node<MatrixState, MatrixOperator> root, int heuristicNum) throws IOException, ClassNotFoundException {
         HashSet<MatrixState> visitedStates = new HashSet<MatrixState>();
-        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Node<MatrixState, MatrixOperator>> Q = new PriorityQueue<>();
         Q.add(root);
         visitedStates.add(root.getState());
         int expandedNodes = 0;
