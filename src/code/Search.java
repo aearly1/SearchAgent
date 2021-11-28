@@ -61,7 +61,7 @@ public class Search {
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
             // TODO: Basant | Enqueue nodes
-            ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
+            ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
@@ -95,7 +95,7 @@ public class Search {
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
             // TODO: Basant | Enqueue nodes
-            ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
+            ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
@@ -149,7 +149,7 @@ public class Search {
 
 
             // All possible actions from current state
-            ArrayList<MatrixOperator> actions = problem.actions(head.getState());
+            ArrayList<MatrixOperator> actions = problem.actions(head);
 
             //current action
             for (MatrixOperator action : actions) {
@@ -187,7 +187,7 @@ public class Search {
         	expandedNodes++;
             Node<MatrixState, MatrixOperator> head = Q.poll();
             if (problem.isGoal(head.getState())) return new Object[]{head,expandedNodes};
-            ArrayList <MatrixOperator> possible_actions = problem.actions(head.getState());
+            ArrayList <MatrixOperator> possible_actions = problem.actions(head);
             for (MatrixOperator x : possible_actions)
             {
             	MatrixState new_state=problem.result(head.getState(), x);
@@ -236,7 +236,7 @@ public class Search {
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
             // TODO: Ali | Enqueue nodes
-            ArrayList<MatrixOperator> possibleActions = problem.actions(head.getState());
+            ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
                 if (!visitedStates.contains(possibleState)) {
@@ -280,7 +280,7 @@ public class Search {
 
 
             // All possible actions from current state
-            ArrayList<MatrixOperator> actions = problem.actions(head.getState());
+            ArrayList<MatrixOperator> actions = problem.actions(head);
 
             //current action
             for (MatrixOperator action : actions) {

@@ -166,7 +166,8 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     }
 
     @Override
-    public ArrayList<MatrixOperator> actions(MatrixState s) {
+    public ArrayList<MatrixOperator> actions(Node<MatrixState, MatrixOperator> n) {
+        MatrixState s = n.getState();
         ArrayList<MatrixOperator> operators = new ArrayList<>();
 
         //TODO: Moataz
@@ -180,18 +181,18 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         //=============movement=============
 
 
-        if (neo_loc.getY() < dims.getY() - 1 && !agents.contains(new Location(neo_loc.getX(), neo_loc.getY() + 1))
+        if (n.getAction() != MatrixOperator.LEFT && neo_loc.getY() < dims.getY() - 1 && !agents.contains(new Location(neo_loc.getX(), neo_loc.getY() + 1))
                 && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.RIGHT)) {
             operators.add(MatrixOperator.RIGHT);
         }
-        if (neo_loc.getY() > 0 && !agents.contains(new Location(neo_loc.getX(), neo_loc.getY() - 1))
+        if (n.getAction() != MatrixOperator.RIGHT && neo_loc.getY() > 0 && !agents.contains(new Location(neo_loc.getX(), neo_loc.getY() - 1))
                 && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.LEFT)) {
             operators.add(MatrixOperator.LEFT);
         }
-        if (neo_loc.getX() < dims.getX() - 1 && !agents.contains(new Location(neo_loc.getX() + 1, neo_loc.getY())) && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.DOWN)) {
+        if (n.getAction() != MatrixOperator.UP && neo_loc.getX() < dims.getX() - 1 && !agents.contains(new Location(neo_loc.getX() + 1, neo_loc.getY())) && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.DOWN)) {
             operators.add(MatrixOperator.DOWN);
         }
-        if (neo_loc.getX() > 0 && !agents.contains(new Location(neo_loc.getX() - 1, neo_loc.getY())) && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.UP)) {
+        if (n.getAction() != MatrixOperator.DOWN && neo_loc.getX() > 0 && !agents.contains(new Location(neo_loc.getX() - 1, neo_loc.getY())) && !Helpers.hostage98(neo_loc, hostages, MatrixOperator.UP)) {
             operators.add(MatrixOperator.UP);
         }
         //================== hostage==============
@@ -228,7 +229,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         //================ fly =======================================
 
-        if (fly_loc.containsKey(neo_loc)) {
+        if (fly_loc.containsKey(neo_loc) && n.getAction() != MatrixOperator.FLY) {
             operators.add(MatrixOperator.FLY);
         }
         return operators;
@@ -436,7 +437,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         if (a != (MatrixOperator.TAKE_PILL))//check if the agent didn't take pill (if he did no hostage will die)
         {
             for (Hostage h : s1.getHostages()) {
-                if (h.getDamage() == 98 || h.getDamage() == 99)// check if the damage will become 100 in the new state
+                if ((h.getDamage() == 98 || h.getDamage() == 99) && (a != MatrixOperator.DROP || !h.isCarried()))// check if the damage will become 100 in the new state
                 {
                     cost[0]++; // increment the number of killed hostages
                 }

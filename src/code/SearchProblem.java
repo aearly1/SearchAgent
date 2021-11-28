@@ -29,10 +29,10 @@ public abstract class SearchProblem<State, Operator, costType> {
     /**
      * Gives the possible actions in the current state.
      *
-     * @param s current state.
+     * @param n current node state.
      * @return a list of possible actions in this state.
      */
-    abstract ArrayList<Operator> actions(State s); // component 2
+    abstract ArrayList<Operator> actions(Node<State, Operator> n); // component 2
 
     /**
      * Returns the state resulting from applying action a on state s.

@@ -7,11 +7,10 @@ import java.util.Objects;
  * Helper class which contains all the attributes needed for a hostage.
  */
 
-public class Hostage implements Serializable {
+public class Hostage {
     /**
      * We need to track hostage location on the grid, hostage health, and
      * if they're currently being carried by neo.
-     * <p>
      * Location and damage together determine if a hostage is at the telephone
      * booth dead or alive (to avoid updating damage and to count them as saved hostages).
      * carried and damage together determine if a hostage should turn or die. If damage is
@@ -79,13 +78,14 @@ public class Hostage implements Serializable {
         Hostage h = (Hostage) obj;
 
         if (!this.getLocation().equals(h.getLocation())) return false;
-        if (this.getDamage() != h.getDamage()) return false;
+        if (this.getDamage() >= 100 &&  h.getDamage() < 100) return false;
+        if (this.getDamage() < 100 &&  h.getDamage() >= 100) return false;
         if (this.isCarried() != h.isCarried()) return false;
         return this.getId() == h.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_location, _damage, _carried);
+        return this.getId();
     }
 }
