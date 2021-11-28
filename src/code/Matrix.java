@@ -560,11 +560,8 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         //int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
-<<<<<<< HEAD
         float minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
-=======
-        int minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
->>>>>>> a96fde327073c3a394c75bf042991c68a1c4747b
+
         for (Hostage h : hostages) {
             /*if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
             {
@@ -575,27 +572,18 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-<<<<<<< HEAD
         minKillOp = minKillOp / (float)4.0; //since at best you will kill 4 agents at once (one at each adjacent cell)
-=======
-        minKillOp = minKillOp / 4; //since at best you will kill 4 agents at once (one at each adjacent cell)
->>>>>>> a96fde327073c3a394c75bf042991c68a1c4747b
+
         /*int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
         int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
         if (neoDamage >= 100) {
             neoDamage -= 100;
             minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
-<<<<<<< HEAD
         }*/
         //int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
         //int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
         // = nCarryOp + minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
-=======
-        }
-        int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
-        int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost = nCarryOp + minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs*/
->>>>>>> a96fde327073c3a394c75bf042991c68a1c4747b
+
         cost = minKillOp;
         return cost;
     }
