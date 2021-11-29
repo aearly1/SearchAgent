@@ -8,7 +8,7 @@ import java.util.Objects;
  * starting from the bottom left of the grid (0, 0). position cannot be negative.
  */
 
-public class Location implements Serializable {
+public class Location {
 
     /**
      * _x: horizontal position

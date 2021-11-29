@@ -17,7 +17,7 @@ public class Hostage {
      * 100 and location is not the booth, that's an agent and must be killed.
      */
 
-    private int _id;
+    private int _id; // id for hashing and identifying hostage instances
     private Location _location;
     private int _damage;
     private boolean _carried;
@@ -73,6 +73,13 @@ public class Hostage {
     // ================================Hashing=================================
 
 
+    /**
+     * returns whether two hostages are equal or not. Two hostages are equal if
+     * both have the same location, carried status, being alive or dead, and id.
+     *
+     * @param obj a hostage
+     * @return true or false
+     */
     @Override
     public boolean equals(Object obj) {
         Hostage h = (Hostage) obj;

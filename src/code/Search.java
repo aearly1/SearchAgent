@@ -16,9 +16,6 @@ public class Search {
             Node<MatrixState, MatrixOperator> root = new Node<>();
             root.setState(mProblem.initialState);
 
-            //TODO: Please implement your search in separate functions to leave this portion tidy,
-            // be careful when assigning path costs and node heuristics in your method. Assign the values
-            // that best suit your strategy (i.e. BFS: heuristic = pathCost = -1)
             switch (strategy) {
                 case "BF":
                     return BFS(mProblem, root);
@@ -60,7 +57,6 @@ public class Search {
             
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
-            // TODO: Basant | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
@@ -94,7 +90,6 @@ public class Search {
             
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
-            // TODO: Basant | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);
@@ -235,7 +230,6 @@ public class Search {
             
             if (problem.isGoal(head.getState())) return new Object[]{head, expandedNodes};
 
-            // TODO: Ali | Enqueue nodes
             ArrayList<MatrixOperator> possibleActions = problem.actions(head);
             for (MatrixOperator a : possibleActions) {
                 MatrixState possibleState = problem.result(head.getState(), a);

@@ -13,7 +13,7 @@ import java.util.Objects;
  * know the effects of our actions, and determine goal configurations.
  */
 
-public class MatrixState implements Serializable {
+public class MatrixState {
     /**
      * The dimensions of our grid. Needed for a complete transition model. REMOVE
      * IF PROVEN UNNECESSARY.
@@ -270,6 +270,10 @@ public class MatrixState implements Serializable {
         return Objects.hash(_gridDims, _neo, _hostages, _agentLocs, _padLocs, _pillLocs, _teleBoothLoc);
     }
 
+    /**
+     *
+     * @return a visualization of the current state as a grid
+     */
     @Override
     public String toString() {
         StringBuilder grid = new StringBuilder();

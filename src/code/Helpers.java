@@ -6,8 +6,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Helpers {
 
-    // ============================Additional-Methods===========================
-
     /**
      * @param s string of locations delimited by ,
      * @return an arraylist of locations
@@ -126,7 +124,7 @@ public class Helpers {
      * – nodes is the number of nodes chosen for expansion during the search.
      */
     public static String solutionStr(Node<MatrixState, MatrixOperator> goal, int expandedNodes) {
-        if(goal == null) return "No Solution";
+        if (goal == null) return "No Solution";
         StringBuilder ret = new StringBuilder();
 
         Node<MatrixState, MatrixOperator> head = goal;
@@ -164,9 +162,6 @@ public class Helpers {
                 default:
                     break;
             }
-//            ret.append(head.getHeuristic()).append(",");
-
-
             head = head.getParent();
         }
 
@@ -191,13 +186,20 @@ public class Helpers {
         return ret.toString();
     }
 
-    public static StringBuilder visualize(Node<MatrixState, MatrixOperator> head){
+    /**
+     * Constructs a visual presentation of the grid as it undergoes the
+     * different steps of the discovered solution (if one was discovered).
+     *
+     * @param head the current node/step of the goal path
+     * @return A stringBuilder that contains the visualized steps
+     */
+    public static StringBuilder visualize(Node<MatrixState, MatrixOperator> head) {
         if (head == null) return new StringBuilder();
 
         StringBuilder ret = new StringBuilder(visualize(head.getParent()));
 
         ret.append("========================NODE-AT-DEPTH-" + head.getDepth() + "========================\n");
-        ret.append("ACTION: ").append(head.getAction() == null? "NOP": head.getAction().name())
+        ret.append("ACTION: ").append(head.getAction() == null ? "NOP" : head.getAction().name())
                 .append(", ").append("PATH COST: [").append(head.getPathCost()[0])
                 .append(", ").append(head.getPathCost()[1]).append("], ")
                 .append("HEURISTIC: ").append(head.getHeuristic()).append("\n\n")
