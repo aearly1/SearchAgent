@@ -41,9 +41,9 @@ public class Main {
 
         String[] strats = new String[]{"BF", "DF", "ID", "UC", "GR1", "GR2", "AS1", "AS2"};
 
-        String grid = grid6;
+        String grid = grid3;
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 8; i++) {
             System.out.println(strats[i] + ":");
             System.out.println(Matrix.solve(grid, strats[i], true));
             System.out.println();

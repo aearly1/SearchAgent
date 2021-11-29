@@ -554,7 +554,11 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
      * cost of taking pills).
      */
     public float ASHeuristic2(MatrixState s) {
-        float cost = 0;
+        if(this.isGoal(s))
+        {
+            return 0;
+        }
+        float cost = 1;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -582,7 +586,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         //int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
         // = nCarryOp + minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
 
-        cost = minKillOp;
+        cost += minKillOp;
         return cost;
     }
     
@@ -634,7 +638,11 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
     
     public int GreedyHeuristic3(MatrixState s)
     {
-    	int cost = 0;
+        if(this.isGoal(s))
+        {
+            return 0;
+        }
+    	int cost = 1;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -656,13 +664,17 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
             neoDamage -= 100;
             minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
         }
-        cost = minTakePillOp;
+        cost += minTakePillOp;
         return cost;
 
     }
     
     public int ASHeuristicTest1(MatrixState s) {
-        int cost = 0;
+        if(this.isGoal(s))
+        {
+            return 0;
+        }
+        int cost = 1;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -688,13 +700,17 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
         int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost = minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
+        cost += minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
 
         return cost;
     }
     
     public float ASHeuristicTest2(MatrixState s) {
-        float cost = 0;
+        if(this.isGoal(s))
+        {
+            return 0;
+        }
+        float cost = 1;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -720,7 +736,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
         int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost =((float) 0.5) * nCarryOp + minKillOp; // the total cost is the sum of the 4 individual estimated costs
+        cost +=((float) 0.5) * nCarryOp + minKillOp; // the total cost is the sum of the 4 individual estimated costs
 
         return cost;
     }
