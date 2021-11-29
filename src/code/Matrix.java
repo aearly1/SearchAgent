@@ -532,7 +532,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-        minKillOp = minKillOp%3==0? minKillOp/3:minKillOp/3+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
+        minKillOp = minKillOp%4==0? minKillOp/4:minKillOp/4+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
         int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
         int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
@@ -547,22 +547,17 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         return cost;
     }
     
-    public float ASHeuristic2(MatrixState s) {
-        if(this.isGoal(s))
+    public int ASHeuristic2(MatrixState s) {
+    	if(this.isGoal(s))
         {
             return 0;
         }
-        float cost = 0;
+        int cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
-        int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
         int minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
 
         for (Hostage h : hostages) {
-            if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-            {
-                nCarryOp++; //hostage requires a carry operation
-            }
             if (!h.getLocation().equals(tBooth) && h.getDamage() == 100) //check if this hostage has turned into agent
             {
                 minKillOp++; //must kill agent
@@ -570,16 +565,8 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         minKillOp = minKillOp%4==0? minKillOp/4:minKillOp/4+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
-        int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
-        int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
-        if (neoDamage >= 100) {
-            neoDamage -= 100;
-            minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
-        }
-        int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
-        int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost =((float) 0.5) * nCarryOp + minKillOp; // the total cost is the sum of the 4 individual estimated costs
-        if(cost==((float)0.0))cost=1;
+        cost= minKillOp; // the total cost is the sum of the 4 individual estimated costs
+        if(cost==0)cost=1;
         return cost;
     }
 
