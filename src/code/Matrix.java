@@ -457,118 +457,17 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         return cost;
     }
 
-    /**
-     * The first A* heuristic assigns a cost value that corresponds
-     * to the total number of unsaved (and ALIVE) hostages since
-     * you will need at leaost ne action to save each hostage.
-     * Thus, this is guaranteed to be admissable.
-     */
-    public float ASHeuristic1(MatrixState s) {
-    	float cost = 0;
-        Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
-        ArrayList<Hostage> hostages = s.getHostages(); //get hostages
-        int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
-        float minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
-        for (Hostage h : hostages) {
-            if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-            {
-                nCarryOp++; //hostage requires a carry operation
-            }
-            if (!h.getLocation().equals(tBooth) && h.getDamage() == 100) //check if this hostage has turned into agent
-            {
-                minKillOp++; //must kill agent
-            }
-        }
-        minKillOp = minKillOp / (float) 4.0; //since at best you will kill 4 agents at once (one at each adjacent cell)
-        cost = nCarryOp + minKillOp;
-        return cost;
-    }
-
-
-    public int GreedHeuristic2(MatrixState s) {
-        ArrayList<Hostage> hostages = s.getHostages();
-        Location neo_loc = s.getNeo().getLocation();
-        Location TB = s.getTeleBoothLoc();
-        return gh2helper(hostages, neo_loc, TB);//pass by value
-    }
-
-    private int gh2helper(ArrayList<Hostage> hostages, Location neo_loc, Location TB) {
-        if (hostages.size() == 0) {
-//    		Location last=hostages.get(0).getLocation();
-            int manhatten = Math.abs(neo_loc.getX() - TB.getX()) + Math.abs(neo_loc.getY() - TB.getY());
-
-            return manhatten;
-        }
-
-        if (hostages.size() == 1) {
-            Location last = hostages.get(0).getLocation();
-            int manhatten = Math.abs(neo_loc.getX() - last.getX()) + Math.abs(neo_loc.getY() - last.getY()) + Math.abs(last.getX() - TB.getX()) + Math.abs(last.getY() - TB.getY());
-
-            return manhatten;
-        } else {
-            int indx = 0;
-            int min_distance = Integer.MAX_VALUE;
-            for (int i = 0; i < hostages.size(); i++) {
-                Hostage h = hostages.get(i);
-                int manhatten = Math.abs(neo_loc.getX() - h.getLocation().getX()) + Math.abs(neo_loc.getY() - h.getLocation().getY());
-                if (manhatten < min_distance) {
-                    min_distance = manhatten;
-                    indx = i;
-                }
-            }
-            neo_loc = hostages.get(indx).getLocation();
-            hostages.remove(indx);
-            return min_distance + gh2helper(hostages, neo_loc, TB);
-
-        }
-    }
-
-    /**
-     * The second A* heuristic assigns a cost value that corresponds
-     * to a relaxed problem with less restrictions on the operators.
-     * This is done by ignoring the cost of movements (since the cost
-     * of movement is difficult to estimate as it depends of the path
-     * that the agent chooses to take and where a pad is located. In the
-     * relaxed problem, only the cost of carry, drop, kill agents and
-     * take pills is considered. The cost of the carry is estimated
-     * to be the number of unsaved hostages since each hostage is
-     * located at a different cell (thus it is admissable). The cost
-     * of the drop operation is estimated to be the number of drop
-     * operations required if Neo is currently not carrying any hostage
-     * and he decides to carry the max possible hostages before dropping
-     * them at booth (i.e ceil(number of unsaved/maxCapacity)). It can
-     * never be less than that since Neo can't carry more than his max capacity
-     * and thus it's admissable. The cost of kill operation is considered
-     * to be the number of agents that Neo is REQUIRED to kill (i.e those
-     * who were initially hostages) divided by 4. We divide by 4 since at best
-     * there will be a hostage turned agent at each adjacent cell. Thus, with
-     * each kill operation we are executing 4 of the REQUIRED kills at once.
-     * It can never be less than that since you cant kill more than 4 hostages
-     * at a time (since no two hosatge are in the same cell initially). Finally,
-     * the number of pills taken is estimated as the number of REQUIRED pills
-     * that neo must take to stay alive. Each time Neo executes a REQUIRED kill
-     * operation, damage is increased by 20. Thus, Neo must take at least enough
-     * pills to maintain the damage below 100 after executing the mandatory kill
-     * operation. The total cost is the SUM of the four mentioned costs (i.e
-     * total cost = cost of carry + cost of drop + cost of killing hostages +
-     * cost of taking pills).
-     */
-    public float ASHeuristic2(MatrixState s) {
+    public float GreedyHeuristic1(MatrixState s) {
         if(this.isGoal(s))
         {
             return 0;
         }
-        float cost = 1;
+        float cost=0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
-        int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
         float minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
 
         for (Hostage h : hostages) {
-            /*if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-            {
-                nCarryOp++; //hostage requires a carry operation
-            }*/
             if (!h.getLocation().equals(tBooth) && h.getDamage() == 100) //check if this hostage has turned into agent
             {
                 minKillOp++; //must kill agent
@@ -576,82 +475,24 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         minKillOp = minKillOp / (float)4.0; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
-        /*int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
-        int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
-        if (neoDamage >= 100) {
-            neoDamage -= 100;
-            minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
-        }*/
-        //int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
-        //int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        // = nCarryOp + minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
-
-        cost += minKillOp;
+        cost= minKillOp;
+        if(cost==((float)0.0))cost=1;
         return cost;
     }
-    
-//    public int ASHeuristicTest1(MatrixState s) {
-//        int cost = 0;
-//        Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
-//        ArrayList<Hostage> hostages = s.getHostages(); //get hostages
-//        int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
-//        int minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
-//
-//        for (Hostage h : hostages) {
-//            if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-//            {
-//                nCarryOp++; //hostage requires a carry operation
-//            }
-//            if (!h.getLocation().equals(tBooth) && h.getDamage() == 100) //check if this hostage has turned into agent
-//            {
-//                minKillOp++; //must kill agent
-//            }
-//        }
-//        minKillOp = minKillOp%3==0? minKillOp/3:minKillOp/3+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
-//
-//        int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
-//        int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
-//        if (neoDamage >= 100) {
-//            neoDamage -= 100;
-//            minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
-//        }
-//        int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
-//        int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-//        cost = nCarryOp + minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
-//
-//        return cost;
-//    }
-    
-    public int GreedHeuristic1(MatrixState s) {
-        int cost = 0;
-        Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
-        ArrayList<Hostage> hostages = s.getHostages(); //get hostages
 
-        for (Hostage h : hostages) {
-            if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-            {
-                cost += Math.abs(h.getLocation().getX() - tBooth.getX()) + Math.abs(h.getLocation().getY() - tBooth.getY()); //add Manhattan distance to total cost
-            }
-        }
-        return cost;
-    }
     
-    public int GreedyHeuristic3(MatrixState s)
+    public int GreedyHeuristic2(MatrixState s)
     {
         if(this.isGoal(s))
         {
             return 0;
         }
-    	int cost = 1;
+    	int cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
-        int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
         int minKillOp = 0; //minimum number of kill operations required (to kill the hostages turned into agents)
         for (Hostage h : hostages) {
-            /*if (!h.getLocation().equals(tBooth) && h.getDamage() < 100) //check if this hostage is alive and unsaved
-            {
-                nCarryOp++; //hostage requires a carry operation
-            }*/
+           
             if (!h.getLocation().equals(tBooth) && h.getDamage() == 100) //check if this hostage has turned into agent
             {
                 minKillOp++; //must kill agent
@@ -664,17 +505,18 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
             neoDamage -= 100;
             minTakePillOp = neoDamage / 20 + 1; //calculate the minimum dumber of pills needed
         }
-        cost += minTakePillOp;
+        cost= minTakePillOp;
+        if(cost==0)cost=1;
         return cost;
 
     }
     
-    public int ASHeuristicTest1(MatrixState s) {
+    public int ASHeuristic1(MatrixState s) {
         if(this.isGoal(s))
         {
             return 0;
         }
-        int cost = 1;
+        int cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -700,17 +542,17 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
         int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost += minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
-
+        cost= minDropOp + minKillOp + minTakePillOp; // the total cost is the sum of the 4 individual estimated costs
+        if(cost==0)cost=1;
         return cost;
     }
     
-    public float ASHeuristicTest2(MatrixState s) {
+    public float ASHeuristic2(MatrixState s) {
         if(this.isGoal(s))
         {
             return 0;
         }
-        float cost = 1;
+        float cost = 0;
         Location tBooth = s.getTeleBoothLoc(); //get telephone booth location
         ArrayList<Hostage> hostages = s.getHostages(); //get hostages
         int nCarryOp = 0; //number of carry operations needed to save all unsaved and alive hostages
@@ -726,7 +568,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-        minKillOp = minKillOp%3==0? minKillOp/3:minKillOp/3+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
+        minKillOp = minKillOp%4==0? minKillOp/4:minKillOp/4+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
         int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
         int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
@@ -736,8 +578,8 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
         }
         int neoFullCap = s.getNeo().getOriginalCapacity(); // get max number of hostages that Neo can carry
         int minDropOp = nCarryOp / neoFullCap + nCarryOp % neoFullCap == 0 ? 0 : 1; //calculate minimum number of drop operations
-        cost +=((float) 0.5) * nCarryOp + minKillOp; // the total cost is the sum of the 4 individual estimated costs
-
+        cost =((float) 0.5) * nCarryOp + minKillOp; // the total cost is the sum of the 4 individual estimated costs
+        if(cost==((float)0.0))cost=1;
         return cost;
     }
 
