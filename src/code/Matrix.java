@@ -532,7 +532,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-        minKillOp = minKillOp%4==0? minKillOp/4:minKillOp/4+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
+        minKillOp = minKillOp%3==0? minKillOp/3:minKillOp/3+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
         int minTakePillOp = 0; //minimum number of pills required to be taken in order for neo to remain alive
         int neoDamage = s.getNeo().getDamage() + minKillOp * 20;
@@ -563,7 +563,7 @@ public class Matrix extends SearchProblem<MatrixState, MatrixOperator, int[]> {
                 minKillOp++; //must kill agent
             }
         }
-        minKillOp = minKillOp%4==0? minKillOp/4:minKillOp/4+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
+        minKillOp = minKillOp%3==0? minKillOp/3:minKillOp/3+1; //since at best you will kill 4 agents at once (one at each adjacent cell)
 
         cost= minKillOp; // the total cost is the sum of the 4 individual estimated costs
         if(cost==0)cost=1;
